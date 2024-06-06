@@ -1,0 +1,37 @@
+.relative {
+  position: relative;
+}
+.absolute {
+  position: absolute;
+}
+.bgFormColor {
+  background-color: rgb(37, 5, 111);
+}
+.textColor {
+  color: rgb(175, 222, 255);
+}
+input {
+  border: none;
+  border-radius: 0;
+}
+input:focus {
+  outline: 0;
+  box-shadow: none;
+}
+.eye i {
+  position: absolute;
+  margin-top: -23px;
+  right: 38%;
+}
+.alreadyAcc {
+  cursor: pointer;
+}
+.alreadyAcc,
+.forgotPass {
+  text-decoration: none;
+}
+.btnSubmit {
+  background-color: rgb(175, 222, 255);
+  color: rgb(37, 5, 111);
+  border-radius: 0;
+}

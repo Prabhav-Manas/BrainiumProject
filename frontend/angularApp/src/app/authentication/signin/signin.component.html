@@ -1,0 +1,63 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 m-auto my-5 p-4 shadow bgFormColor">
+      <h1 class="text-center textColor">Sign In</h1>
+      <form [formGroup]="logInForm">
+        <div class="mb-4">
+          <label for="email" class="form-label textColor">Email</label>
+          <input
+            type="email"
+            class="form-control relative"
+            id="email"
+            formControlName="email"
+            [ngClass]="{'is-invalid':logInForm.controls?.['email']?.invalid && logInForm.controls?.['email']?.touched}"
+            (keydown)="Space($event)"
+          />
+          <small
+            *ngIf="logInForm.controls?.['email']?.errors?.['required']"
+            class="invalid-feedback text-danger"
+          >
+            Email is required.
+          </small>
+        </div>
+        <div class="mb-4">
+          <label for="password" class="form-label textColor">Password</label>
+          <input
+            type="{{ hide }}"
+            class="form-control relative"
+            id="password"
+            formControlName="password"
+            [ngClass]="{'is-invalid': logInForm.controls?.['password']?.invalid && logInForm.controls?.['password']?.touched}"
+            (keydown)="Space($event)"
+          />
+          <span class="eye">
+            <i
+              class="fa fa-{{
+                hide == 'password' ? 'eye-slash' : 'eye'
+              }} random-eye"
+              id="togglePassword"
+              (click)="
+                hide == 'password' ? (hide = 'text') : (hide = 'password')
+              "
+            ></i>
+          </span>
+        </div>
+        <div class="d-md-flex justify-content-between">
+          <div class="">
+            <!-- <p class="textColor alreadyAcc"> -->
+            <a routerLink="/signup" class="textColor alreadyAcc"
+              >Don't have account? Sign up</a
+            ><br />
+            <!-- </p> -->
+            <!-- <p> -->
+            <a href="" class="textColor forgotPass">Forgot Password</a>
+            <!-- </p> -->
+          </div>
+          <button type="submit" class="btn btnSubmit" (click)="onSubmit()">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

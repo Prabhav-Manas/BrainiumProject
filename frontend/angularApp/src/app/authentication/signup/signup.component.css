@@ -1,0 +1,38 @@
+.relative {
+  position: relative;
+}
+.absolute {
+  position: absolute;
+}
+.floatDropDown {
+  float: right;
+}
+.bgFormColor {
+  background-color: #050c9c;
+}
+input {
+  border: none;
+  border-radius: 0;
+}
+input:focus {
+  outline: 0;
+  box-shadow: none;
+}
+.eye i {
+  position: absolute;
+  margin-top: -23px;
+  right: 38%;
+}
+.textColor {
+  color: rgb(175, 222, 255);
+}
+.alreadyAcc {
+  cursor: pointer;
+  text-decoration: none;
+}
+.btnSubmit {
+  border: none;
+  background-color: rgb(175, 222, 255);
+  color: rgb(37, 5, 111);
+  border-radius: 0;
+}

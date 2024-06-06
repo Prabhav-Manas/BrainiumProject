@@ -1,0 +1,216 @@
+<!-- DropDown -->
+<div class="container">
+  <div class="dropdown">
+    <button
+      class="btn btn-secondary dropdown-toggle"
+      type="button"
+      id="dropdownMenuButton1"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      Dropdown button
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+      <li>
+        <a class="dropdown-item" routerLink="[]" (click)="onSeller()">Seller</a>
+      </li>
+      <li>
+        <a class="dropdown-item" routerLink="[]" (click)="onUser()">User</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 m-auto my-4 p-4 shadow bgFormColor">
+      <h1 class="text-center textColor">Sign Up</h1>
+      <form [formGroup]="regForm">
+        <!-- Full Name -->
+        <div class="d-md-flex mb-4">
+          <div class="col-md-6">
+            <label for="firstName" class="form-label textColor"
+              >First Name</label
+            >
+            <input
+              type="text"
+              class="form-control relative"
+              id="firstName"
+              formControlName="firstName"
+              oninput="value = this.value.replace(/[^a-zA-Z\s{2,}\-]+/g, '')"
+              [ngClass]="{'is-invalid':regForm.controls?.['firstName']?.invalid && regForm.controls?.['firstName']?.touched}"
+              (keydown)="Space($event)"
+            />
+            <small
+              *ngIf="regForm.controls?.['firstName']?.errors?.['required']"
+              class="invalid-feedback text-danger"
+            >
+              First Name is required.
+            </small>
+          </div>
+          &nbsp;
+          <div class="col-md-6">
+            <label for="lastName" class="form-label textColor">Last Name</label>
+            <input
+              type="text"
+              class="form-control relative"
+              id="lastName"
+              formControlName="lastName"
+              oninput="value = this.value.replace(/[^a-zA-Z\s{2,}\-]+/g, '')"
+              [ngClass]="{'is-invalid':regForm.controls?.['lastName']?.invalid && regForm.controls?.['lastName']?.touched}"
+              (keydown)="Space($event)"
+            />
+            <small
+              *ngIf="regForm.controls?.['lastName']?.errors?.['required']"
+              class="invalid-feedback text-danger"
+            >
+              Last Name is required.
+            </small>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-4">
+          <label for="email" class="form-label textColor">Email</label>
+          <input
+            type="email"
+            class="form-control relative"
+            id="email"
+            formControlName="email"
+            [ngClass]="{'is-invalid':regForm.controls?.['email']?.invalid && regForm.controls?.['email']?.touched}"
+            (keydown)="Space($event)"
+          />
+          <small
+            *ngIf="regForm.controls?.['email']?.errors?.['required']"
+            class="invalid-feedback text-danger"
+          >
+            Email is required.
+          </small>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-4">
+          <label for="password" class="form-label textColor">Password</label>
+          <input
+            type="{{ hide }}"
+            class="form-control relative"
+            id="password"
+            formControlName="password"
+            [ngClass]="{'is-invalid':regForm.controls?.['password']?.invalid && regForm.controls?.['password']?.touched}"
+            (keydown)="Space($event)"
+          />
+          <span class="eye">
+            <i
+              class="fa fa-{{
+                hide == 'password' ? 'eye-slash' : 'eye'
+              }} random-eye"
+              id="togglePassword"
+              (click)="
+                hide == 'password' ? (hide = 'text') : (hide = 'password')
+              "
+            ></i>
+          </span>
+          <small
+            *ngIf="regForm.controls?.['password']?.errors?.['required']"
+            class="invalid-feedback text-danger"
+          >
+            Password is required.
+          </small>
+        </div>
+
+        <!-- Country Code & Phone -->
+        <div class="d-md-flex mb-4">
+          <div class="col-md-6">
+            <label for="code" class="form-label textColor">Country Code</label>
+            <input
+              type="text"
+              class="form-control relative"
+              id="code"
+              formControlName="countryCode"
+              [ngClass]="{'is-invalid':regForm.controls?.['countryCode']?.invalid && regForm.controls?.['countryCode']?.touched}"
+              (keydown)="Space($event)"
+            />
+            <small
+              *ngIf="regForm.controls?.['countryCode']?.errors?.['required']"
+              class="invalid-feedback text-danger"
+            >
+              Country Code is required.
+            </small>
+          </div>
+          &nbsp;
+          <div class="col-md-6">
+            <label for="phone" class="form-label textColor">Phone</label>
+            <input
+              type="text"
+              class="form-control relative"
+              id="phone"
+              formControlName="phone"
+              oninput="value = this.value.replace(/[^0-9\-]+/g, '').replace(/(\..*)\./g, '$1')"
+              [ngClass]="{'is-invalid':regForm.controls?.['phone']?.invalid && regForm.controls?.['phone']?.touched}"
+              (keydown)="Space($event)"
+            />
+            <small
+              *ngIf="regForm.controls?.['phone']?.errors?.['required']"
+              class="invalid-feedback text-danger"
+            >
+              Phone is required.
+            </small>
+          </div>
+        </div>
+
+        <!-- Business Name & GST Number -->
+        <div class="d-md-flex mb-4" *ngIf="seller">
+          <div class="col-md-6">
+            <label for="businessName" class="form-label textColor"
+              >Business Name</label
+            >
+            <input
+              type="text"
+              class="form-control relative"
+              id="businessName"
+              formControlName="businessName"
+              [ngClass]="{'is-invalid':regForm.controls?.['businessName']?.invalid && regForm.controls?.['businessName']?.touched}"
+              (keydown)="Space($event)"
+            />
+            <small
+              *ngIf="regForm.controls?.['businessName']?.errors?.['required']"
+              class="invalid-feedback text-danger"
+            >
+              Business Name is required.
+            </small>
+          </div>
+          &nbsp;
+          <div class="col-md-6">
+            <label for="gst" class="form-label textColor">GST Number</label>
+            <input
+              type="text"
+              class="form-control relative"
+              id="gst"
+              formControlName="gst"
+              oninput="value = this.value.replace(/[^0-9\-]+/g, '').replace(/(\..*)\./g, '$1')"
+              [ngClass]="{'is-invalid':regForm.controls?.['gst']?.invalid && regForm.controls?.['gst']?.touched}"
+              (keydown)="Space($event)"
+            />
+            <small
+              *ngIf="regForm.controls?.['gst']?.errors?.['required']"
+              class="invalid-feedback text-danger"
+            >
+              GST Number is required.
+            </small>
+          </div>
+        </div>
+
+        <div class="d-md-flex justify-content-between">
+          <p class="">
+            <a routerLink="/signin" class="textColor alreadyAcc"
+              >Already have account? Sign in</a
+            >
+          </p>
+          <button type="submit" class="btn btnSubmit" (click)="onSubmit()">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
