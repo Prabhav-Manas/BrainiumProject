@@ -4,6 +4,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const app = express();
 const sellerUserRoute = require("./routes/seller-user");
+const { ValidationError } = require("express-validation");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -35,5 +36,26 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/user", sellerUserRoute);
+
+// ---Error Handling Middleware in Express-Validation---
+app.use(function (err, req, res, next) {
+  if (err instanceof ValidationError) {
+    console.log("Validation Error:=>", err);
+
+    const errorMessages = err.details.body
+      .map((error) => error.message)
+      .join(", ");
+    return res.status(err.statusCode).json({
+      message: "Validation Failed",
+      errors: errorMessages,
+    });
+  }
+  console.log("Internal Error:=>", err);
+
+  return res.status(500).json({
+    message: "Internal Server Error",
+    error: err.message,
+  });
+});
 
 module.exports = app;

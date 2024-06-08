@@ -1,8 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
-const { sendVerificationEmail } = require("../mailer");
+const User = require("../models/seller-user");
+const { sendVerificationEmail, sendPasswordResetEmail } = require("../mailer");
 const crypto = require("crypto");
+const path = require("path");
 require("dotenv").config();
 
 // ---CreateSellerUser API---
@@ -27,13 +28,13 @@ exports.createSellerUser = async (req, res) => {
       userData.gstNumber = req.body.gstNumber;
     }
 
-    const user = new User(userData);
-
     // ---Generate a verification token---
     const verificationToken = crypto.randomBytes(20).toString("hex");
 
     // ---Assign the verification token to the user---
-    user.verificationToken = verificationToken;
+    userData.verificationToken = verificationToken;
+    const user = new User(userData);
+
     await user.save();
 
     // ---Construct verification link---
@@ -66,24 +67,39 @@ exports.verificationEmail = async (req, res) => {
     }
 
     if (user.isVerified) {
-      return res.status(200).json({ message: "Email already verified." });
+      // res.status(200).json({ message: "Email already verified." });
+      return res.sendFile(
+        path.join(
+          __dirname,
+          "../../public/email-template",
+          "registration-success.html"
+        )
+      );
     }
 
     user.isVerified = true;
     user.verificationToken = "";
     await user.save();
 
-    res.status(200).json({ message: "Email verification successful." });
+    // res.status(200).json({ message: "Email verification successful." });
     res.sendFile(
-      path.join(__dirname, "public/email-template", "registration-success.html")
+      path.join(
+        __dirname,
+        "../../public/email-template",
+        "registration-success.html"
+      )
     );
   } catch (error) {
-    res.status(400).json({
-      message: "Invalid or expired token.",
-      error: error.message,
-    });
+    // res.status(400).json({
+    //   message: "Invalid or expired token.",
+    //   error: error.message,
+    // });
     res.sendFile(
-      path.join(__dirname, "public/email-template", "registration-failure.html")
+      path.join(
+        __dirname,
+        "../../public/email-template",
+        "registration-failure.html"
+      )
     );
   }
 };
@@ -139,5 +155,78 @@ exports.logInSellerUser = async (req, res) => {
     );
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+// ---Forgot Password API---
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "User not found",
+      });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    const resetTokenExpires = Date.now() + 300000; // 5 minutes validity
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = resetTokenExpires;
+
+    await user.save();
+
+    await sendPasswordResetEmail(user.email, resetToken);
+
+    res.status(200).json({
+      message: "Password reset email sent",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+// ---RESET Password API---
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword, confirmNewPassword } = req.body;
+
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({
+        message: "Passwords do not match",
+      });
+    }
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid or expired token",
+      });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetPasswordToken = "";
+    user.resetPasswordExpires = "";
+
+    await user.save();
+
+    // res.status(200).json({
+    //   message: "Password has been reset",
+    // });
+    res.sendFile(
+      path.join(__dirname, "../../public/email-template", "reset-password.html")
+    );
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
   }
 };

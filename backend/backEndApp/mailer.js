@@ -21,7 +21,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 transporter.use("compile", hbs(handleBarsOptions));
-// Function to send email
+
+// ---Function to send verification email---
 async function sendVerificationEmail(
   customerEmail,
   username,
@@ -48,4 +49,27 @@ async function sendVerificationEmail(
   }
 }
 
-module.exports = { sendVerificationEmail };
+// ---Function for sending RESET Password Email---
+async function sendPasswordResetEmail(customerEmail, token) {
+  try {
+    const resetLink = `http://localhost:8080/reset-password/${token}`;
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: customerEmail,
+      subject: "Reset Password",
+      template: "resetPassword",
+      context: {
+        title: "Reset Password",
+        url: resetLink,
+      },
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Password reset email sent: %s", info.messageId);
+  } catch (error) {
+    console.log("Error in sending password reset email:=>", error);
+  }
+}
+
+module.exports = { sendVerificationEmail, sendPasswordResetEmail };
