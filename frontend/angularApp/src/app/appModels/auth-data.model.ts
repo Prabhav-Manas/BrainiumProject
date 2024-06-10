@@ -1,4 +1,5 @@
 export interface AuthData {
+  userType: string;
   firstName?: string;
   lastName?: string;
   email: string;
@@ -6,5 +7,5 @@ export interface AuthData {
   countryCode?: string;
   phone?: string;
   businessName?: string;
-  gst?: string;
+  gstNumber?: string;
 }

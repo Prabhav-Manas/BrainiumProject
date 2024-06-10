@@ -11,6 +11,8 @@ import { AuthInterceptor } from './authentication/auth-interceptor';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HeaderComponent } from './header/header.component';
 import { VerifyUserComponent } from './verify-user/verify-user.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,8 @@ import { VerifyUserComponent } from './verify-user/verify-user.component';
     DashboardComponent,
     HeaderComponent,
     VerifyUserComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,

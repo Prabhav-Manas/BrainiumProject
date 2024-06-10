@@ -6,11 +6,15 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './authentication/auth.guard';
 import { LogInGuard } from './authentication/logIn.guard';
 import { VerifyUserComponent } from './verify-user/verify-user.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'signin', pathMatch: 'full' },
   { path: 'signin', component: SigninComponent, canActivate: [LogInGuard] },
   { path: 'signup', component: SignupComponent, canActivate: [LogInGuard] },
+  { path: 'forgotPassword', component: ForgotPasswordComponent },
+  { path: 'reset-password/:token', component: ResetPasswordComponent },
   { path: 'verifyUser', component: VerifyUserComponent },
   {
     path: 'dashboard',

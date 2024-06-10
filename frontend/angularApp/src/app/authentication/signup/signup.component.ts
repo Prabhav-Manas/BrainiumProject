@@ -17,8 +17,15 @@ export class SignupComponent implements OnInit {
   hide = 'password';
   seller: boolean = false;
 
+  dropdownOptions = [
+    { value: 'Select', label: 'Select' },
+    { value: 'seller', label: 'Seller' },
+    { value: 'user', label: 'User' },
+  ];
+
   constructor(private fb: FormBuilder, private _authService: AuthService) {
     this.regForm = this.fb.group({
+      userType: new FormControl('Select', [Validators.required]),
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
@@ -26,7 +33,20 @@ export class SignupComponent implements OnInit {
       countryCode: new FormControl('', [Validators.required]),
       phone: new FormControl('', [Validators.required]),
       businessName: new FormControl('', []),
-      gst: new FormControl('', []),
+      gstNumber: new FormControl('', []),
+    });
+
+    this.regForm.get('userType')?.valueChanges.subscribe((value: string) => {
+      this.seller = value === 'seller';
+      if (this.seller) {
+        this.regForm.get('businessName').setValidators([Validators.required]);
+        this.regForm.get('gstNumber').setValidators([Validators.required]);
+      } else {
+        this.regForm.get('businessName').clearValidators();
+        this.regForm.get('gstNumber').clearValidators();
+      }
+      this.regForm.get('businessName').updateValueAndValidity();
+      this.regForm.get('gstNumber').updateValueAndValidity();
     });
   }
 
@@ -50,6 +70,7 @@ export class SignupComponent implements OnInit {
 
   onSubmit() {
     if (this.regForm.valid) {
+      const userType = this.regForm.value.userType;
       const firstName = this.regForm.value.firstName;
       const lastName = this.regForm.value.lastName;
       const email = this.regForm.value.email;
@@ -57,9 +78,10 @@ export class SignupComponent implements OnInit {
       const countryCode = this.regForm.value.countryCode;
       const phone = this.regForm.value.phone;
       const businessName = this.regForm.value.businessName;
-      const gst = this.regForm.value.gst;
+      const gstNumber = this.regForm.value.gstNumber;
 
       this._authService.signUp(
+        userType,
         firstName,
         lastName,
         email,
@@ -67,7 +89,7 @@ export class SignupComponent implements OnInit {
         countryCode,
         phone,
         businessName,
-        gst
+        gstNumber
       );
       console.log(this.regForm.value);
     }

@@ -30,6 +30,7 @@ export class AuthService {
   }
 
   signUp(
+    userType: string,
     firstName: string,
     lastName: string,
     email: string,
@@ -37,9 +38,10 @@ export class AuthService {
     countryCode: string,
     phone: string,
     businessName: string,
-    gst: string
+    gstNumber: string
   ) {
     const authData: AuthData = {
+      userType: userType,
       firstName: firstName,
       lastName: lastName,
       email: email,
@@ -47,7 +49,7 @@ export class AuthService {
       countryCode: countryCode,
       phone: phone,
       businessName: businessName,
-      gst: gst,
+      gstNumber: gstNumber,
     };
     return this.http.post(`${this.baseUrl}/signup`, authData).subscribe(
       (res) => {
@@ -55,12 +57,17 @@ export class AuthService {
       },
       (err) => {
         alert('Something went wrong!');
+        console.log(err);
       }
     );
   }
 
-  signin(email: string, password: string) {
-    const authData: AuthData = { email: email, password: password };
+  signin(userType: string, email: string, password: string) {
+    const authData: AuthData = {
+      userType: userType,
+      email: email,
+      password: password,
+    };
     return this.http
       .post<{ token: string; expiresIn: number }>(
         `${this.baseUrl}/signin`,
@@ -68,9 +75,11 @@ export class AuthService {
       )
       .subscribe(
         (res) => {
+          console.log('Response:=>', res);
           this.token = res.token;
           if (this.token) {
             const expiresInDuration = res.expiresIn;
+            console.log('Expires In Duration:=>', expiresInDuration);
             this.setAuthTimer(expiresInDuration);
             this.isAuthenticated = true;
             this.authStatusListener.next(true);
@@ -78,6 +87,7 @@ export class AuthService {
             const expirationDate = new Date(
               now.getTime() + expiresInDuration * 1000
             );
+            console.log('Expiration Date:=>', expirationDate);
             this.saveAuthData(this.token, expirationDate);
             this.router.navigate(['/dashboard']);
           }
@@ -123,7 +133,7 @@ export class AuthService {
   }
 
   private saveAuthData(token: string, expirationDate: Date) {
-    localStorage.setItem('token', this.token);
+    localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
   }
 
@@ -145,5 +155,23 @@ export class AuthService {
         expirationDate: new Date(expirationDate),
       };
     }
+  }
+
+  forgotPassword(email: string) {
+    return this.http.post<{ message: string }>(
+      `${this.baseUrl}/forgot-password`,
+      { email }
+    );
+  }
+
+  resetPassword(data: {
+    token: string;
+    newPassword: string;
+    confirmNewPassword: string;
+  }) {
+    return this.http.post<{ message: string }>(
+      `${this.baseUrl}/reset-password`,
+      data
+    );
   }
 }

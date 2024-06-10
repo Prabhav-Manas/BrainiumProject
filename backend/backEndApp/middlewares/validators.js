@@ -12,13 +12,13 @@ const registerValidation = {
     userType: Joi.string().valid("user", "seller").required(),
     businessName: Joi.string().when("userType", {
       is: "seller",
-      then: Joi.required(),
-      otherwise: Joi.optional(),
+      then: Joi.string().required(),
+      otherwise: Joi.string().allow("").optional(),
     }),
     gstNumber: Joi.string().when("userType", {
       is: "seller",
-      then: Joi.required(),
-      otherwise: Joi.optional(),
+      then: Joi.string().required(),
+      otherwise: Joi.string().allow("").optional(),
     }),
   }),
 };

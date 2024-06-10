@@ -3,6 +3,25 @@
     <div class="col-md-4 m-auto my-5 p-4 shadow bgFormColor">
       <h1 class="text-center textColor">Sign In</h1>
       <form [formGroup]="logInForm">
+        <!-- UserType DropDown -->
+        <div class="">
+          <div class="">
+            <label for="dropdown" class="textColor">Select User Type:</label>
+            <select
+              id="dropdown"
+              formControlName="userType"
+              class="floatDropDown floatDropDown"
+            >
+              <option
+                *ngFor="let option of dropdownOptions"
+                [value]="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <!-- Email -->
         <div class="mb-4">
           <label for="email" class="form-label textColor">Email</label>
           <input
@@ -20,6 +39,7 @@
             Email is required.
           </small>
         </div>
+        <!-- Password -->
         <div class="mb-4">
           <label for="password" class="form-label textColor">Password</label>
           <input
@@ -50,7 +70,9 @@
             ><br />
             <!-- </p> -->
             <!-- <p> -->
-            <a href="" class="textColor forgotPass">Forgot Password</a>
+            <a routerLink="/forgotPassword" class="textColor forgotPass"
+              >Forgot Password</a
+            >
             <!-- </p> -->
           </div>
           <button type="submit" class="btn btnSubmit" (click)="onSubmit()">

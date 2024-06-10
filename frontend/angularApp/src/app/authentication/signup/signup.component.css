@@ -8,7 +8,7 @@
   float: right;
 }
 .bgFormColor {
-  background-color: #050c9c;
+  background-image: linear-gradient(to right, #c8b6a6, #f1dec9);
 }
 input {
   border: none;
@@ -24,7 +24,7 @@ input:focus {
   right: 38%;
 }
 .textColor {
-  color: rgb(175, 222, 255);
+  color: #000;
 }
 .alreadyAcc {
   cursor: pointer;
@@ -32,7 +32,7 @@ input:focus {
 }
 .btnSubmit {
   border: none;
-  background-color: rgb(175, 222, 255);
-  color: rgb(37, 5, 111);
+  background-color: #8d7b68;
+  color: #fff;
   border-radius: 0;
 }

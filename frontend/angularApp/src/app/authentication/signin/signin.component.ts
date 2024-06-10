@@ -18,8 +18,15 @@ export class SigninComponent implements OnInit, OnDestroy {
   hide = 'password';
   private authStatusSub!: Subscription;
 
+  dropdownOptions = [
+    { value: 'Select', label: 'Select' },
+    { value: 'seller', label: 'Seller' },
+    { value: 'user', label: 'User' },
+  ];
+
   constructor(private fb: FormBuilder, private _authService: AuthService) {
     this.logInForm = this.fb.group({
+      userType: new FormControl('Select', [Validators.required]),
       email: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
     });
@@ -39,10 +46,11 @@ export class SigninComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     if (this.logInForm.valid) {
+      const userType = this.logInForm.value.userType;
       const email = this.logInForm.value.email;
       const password = this.logInForm.value.password;
 
-      this._authService.signin(email, password);
+      this._authService.signin(userType, email, password);
     }
     this.logInForm.reset();
   }

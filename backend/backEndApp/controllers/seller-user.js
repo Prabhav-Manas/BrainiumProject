@@ -26,6 +26,9 @@ exports.createSellerUser = async (req, res) => {
     if (userType === "seller") {
       userData.businessName = req.body.businessName;
       userData.gstNumber = req.body.gstNumber;
+    } else {
+      userData.businessName = "";
+      userData.gstNumber = "";
     }
 
     // ---Generate a verification token---
@@ -44,7 +47,9 @@ exports.createSellerUser = async (req, res) => {
     await sendVerificationEmail(user.email, user.firstName, verificationLink);
 
     // ---Send response---
-    res.status(201).send("User registered. Verification email sent.");
+    res.status(201).json({
+      message: "User registered. Verification email sent.",
+    });
   } catch (error) {
     res.status(500).json({
       error: error.message,
@@ -140,7 +145,7 @@ exports.logInSellerUser = async (req, res) => {
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: 3600 },
+      { expiresIn: "1h" },
       (error, token) => {
         if (error) {
           res.status(401).json({
@@ -150,6 +155,7 @@ exports.logInSellerUser = async (req, res) => {
         }
         res.status(200).json({
           token: token,
+          expiresIn: 3600,
         });
       }
     );
