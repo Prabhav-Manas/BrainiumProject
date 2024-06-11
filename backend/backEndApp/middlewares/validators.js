@@ -44,6 +44,7 @@ const forgotPasswordValidation = {
 // ---Express Validation for Reset Password---
 const resetPasswordValidation = {
   body: Joi.object({
+    userId: Joi.string().required(),
     token: Joi.string().required(),
     newPassword: Joi.string().min(6).required(),
     confirmNewPassword: Joi.string().valid(Joi.ref("newPassword")).required(),

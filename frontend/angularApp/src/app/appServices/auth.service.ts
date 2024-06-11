@@ -165,6 +165,7 @@ export class AuthService {
   }
 
   resetPassword(data: {
+    userId: string;
     token: string;
     newPassword: string;
     confirmNewPassword: string;

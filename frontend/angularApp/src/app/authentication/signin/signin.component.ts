@@ -26,7 +26,7 @@ export class SigninComponent implements OnInit, OnDestroy {
 
   constructor(private fb: FormBuilder, private _authService: AuthService) {
     this.logInForm = this.fb.group({
-      userType: new FormControl('Select', [Validators.required]),
+      userType: new FormControl('user', [Validators.required]),
       email: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
     });

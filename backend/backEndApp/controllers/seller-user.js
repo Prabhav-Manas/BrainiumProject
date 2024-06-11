@@ -4,6 +4,8 @@ const User = require("../models/seller-user");
 const { sendVerificationEmail, sendPasswordResetEmail } = require("../mailer");
 const crypto = require("crypto");
 const path = require("path");
+const { error } = require("console");
+const { ValidationError } = require("express-validation");
 require("dotenv").config();
 
 // ---CreateSellerUser API---
@@ -168,9 +170,11 @@ exports.logInSellerUser = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
+    console.log("Received forgot password request email:=>", email);
     const user = await User.findOne({ email });
 
     if (!user) {
+      console.log("User not found for email:=>", email);
       return res.status(400).json({
         message: "User not found",
       });
@@ -182,14 +186,33 @@ exports.forgotPassword = async (req, res) => {
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = resetTokenExpires;
 
-    await user.save();
+    try {
+      await user.save();
+      console.log("Generated reset token for user:=>", user._id);
 
-    await sendPasswordResetEmail(user.email, resetToken);
+      await sendPasswordResetEmail(user._id, user.email, resetToken);
+      console.log("Password reset email triggered for:=>", user.email);
 
-    res.status(200).json({
-      message: "Password reset email sent",
-    });
+      res.status(200).json({
+        message: "Password reset email sent",
+      });
+    } catch (saveError) {
+      if (saveError.name === "ValidationError") {
+        console.log("Validation Error:=>", saveError.errors);
+        res.status(400).json({
+          message: "Validation Error",
+          errors: saveError.errors,
+        });
+      } else {
+        console.log("Error saving user:=>", saveError);
+        res.status(500).json({
+          error: saveError.message,
+          details: saveError.errors,
+        });
+      }
+    }
   } catch (error) {
+    console.log("Error in forgot password process:=>", error);
     res.status(500).json({
       error: error.message,
     });
@@ -199,7 +222,7 @@ exports.forgotPassword = async (req, res) => {
 // ---RESET Password API---
 exports.resetPassword = async (req, res) => {
   try {
-    const { token, newPassword, confirmNewPassword } = req.body;
+    const { userId, token, newPassword, confirmNewPassword } = req.body;
 
     if (newPassword !== confirmNewPassword) {
       return res.status(400).json({
@@ -208,6 +231,7 @@ exports.resetPassword = async (req, res) => {
     }
 
     const user = await User.findOne({
+      _id: userId,
       resetPasswordToken: token,
       resetPasswordExpires: { $gt: Date.now() },
     });
@@ -219,17 +243,17 @@ exports.resetPassword = async (req, res) => {
     }
 
     user.password = await bcrypt.hash(newPassword, 10);
-    user.resetPasswordToken = "";
-    user.resetPasswordExpires = "";
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
 
     await user.save();
 
-    // res.status(200).json({
-    //   message: "Password has been reset",
-    // });
-    res.sendFile(
-      path.join(__dirname, "../../public/email-template", "reset-password.html")
-    );
+    res.status(200).json({
+      message: "Password has been reset",
+    });
+    // res.sendFile(
+    //   path.join(__dirname, "../../public/email-template", "reset-password.html")
+    // );
   } catch (error) {
     res.status(500).json({
       error: error.message,

@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'signin', component: SigninComponent, canActivate: [LogInGuard] },
   { path: 'signup', component: SignupComponent, canActivate: [LogInGuard] },
   { path: 'forgotPassword', component: ForgotPasswordComponent },
-  { path: 'reset-password/:token', component: ResetPasswordComponent },
+  { path: 'reset-password/:userId/:token', component: ResetPasswordComponent },
   { path: 'verifyUser', component: VerifyUserComponent },
   {
     path: 'dashboard',

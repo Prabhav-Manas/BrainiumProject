@@ -16,6 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class ResetPasswordComponent implements OnInit {
   resetPasswordForm: any = FormGroup;
   token: string = '';
+  userId: string = '';
   errorMessage: string = '';
 
   constructor(
@@ -28,10 +29,15 @@ export class ResetPasswordComponent implements OnInit {
       newPassword: new FormControl('', [Validators.required]),
       confirmNewPassword: new FormControl('', [Validators.required]),
     });
-    this.token = this.route.snapshot.paramMap.get('token') || '';
+    // this.token = this.route.snapshot.paramMap.get('token') || '';
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.route.params.subscribe((params) => {
+      this.token = params['token'];
+      this.userId = params['userId'];
+    });
+  }
 
   Space(event: any) {
     console.log(event);
@@ -49,6 +55,7 @@ export class ResetPasswordComponent implements OnInit {
 
       this._authService
         .resetPassword({
+          userId: this.userId,
           token: this.token,
           newPassword,
           confirmNewPassword,
@@ -56,6 +63,7 @@ export class ResetPasswordComponent implements OnInit {
         .subscribe(
           (res) => {
             console.log('Password Reset Successfull:=>', res);
+            alert('Password Reset Successfull');
             this.router.navigate(['/signin']);
           },
           (error) => {
@@ -64,5 +72,6 @@ export class ResetPasswordComponent implements OnInit {
           }
         );
     }
+    this.resetPasswordForm.reset();
   }
 }

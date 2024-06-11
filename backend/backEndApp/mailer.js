@@ -50,9 +50,9 @@ async function sendVerificationEmail(
 }
 
 // ---Function for sending RESET Password Email---
-async function sendPasswordResetEmail(customerEmail, token) {
+async function sendPasswordResetEmail(userId, customerEmail, token) {
   try {
-    const resetLink = `http://localhost:4200/reset-password/${token}`;
+    const resetLink = `http://localhost:4200/reset-password/${userId}/${token}`;
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
