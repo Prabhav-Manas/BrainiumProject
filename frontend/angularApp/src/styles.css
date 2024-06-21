@@ -3,3 +3,60 @@
 A4907C
 C8B6A6
 F1DEC9 */
+
+/* styles.css or styles.scss */
+
+/* styles.css or styles.scss */
+
+/* styles.css or styles.scss */
+
+.custom-toast-success {
+  background-color: green !important;
+  color: white !important;
+  padding: 15px !important;
+  border-radius: 5px;
+  position: relative;
+  width: 400px; /* Adjust the width as needed */
+  display: flex; /* Use Flexbox */
+  align-items: center; /* Center items vertically */
+}
+
+.custom-toast-error {
+  background-color: red !important;
+  color: white !important;
+  padding: 15px !important;
+  border-radius: 5px;
+  position: relative;
+  width: 400px; /* Adjust the width as needed */
+  display: flex; /* Use Flexbox */
+  align-items: center; /* Center items vertically */
+}
+
+.custom-toast-success .toast-message,
+.custom-toast-error .toast-message {
+  margin-left: 15px; /* Add margin to the text container */
+  flex: 1; /* Take remaining space */
+}
+
+.custom-toast-success:before,
+.custom-toast-error:before {
+  font-size: 20px;
+  margin-right: 15px; /* Adjust the margin as needed */
+  display: inline-block;
+}
+
+.custom-toast-success:before {
+  content: "\f00c"; /* FontAwesome 4 tick mark */
+  font-family: FontAwesome;
+}
+
+.custom-toast-error:before {
+  content: "\f00d"; /* FontAwesome 4 cross mark */
+  font-family: FontAwesome;
+}
+
+/* Toastr position classes override */
+.toast-top-right {
+  top: 12px;
+  right: 12px;
+}

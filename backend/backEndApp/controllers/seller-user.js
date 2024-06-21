@@ -50,11 +50,12 @@ exports.createSellerUser = async (req, res) => {
 
     // ---Send response---
     res.status(201).json({
-      message: "User registered. Verification email sent.",
+      status: 201,
+      message: "Sign up Successful. Verification link sent to your email.",
     });
   } catch (error) {
     res.status(500).json({
-      error: error.message,
+      errorMessage: error.message,
     });
   }
 };
@@ -123,15 +124,19 @@ exports.logInSellerUser = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({
+        status: 400,
         message: "User not found",
+        loaderStatus: "complete", // Indicate loading is complete
       });
     }
 
     // ---Compare the provided password with the stored hashed password---
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({
+      return res.status(401).json({
+        status: 401,
         message: "Invalid credentials",
+        loaderStatus: "complete", // Indicate loading is complete
       });
     }
 
@@ -140,6 +145,7 @@ exports.logInSellerUser = async (req, res) => {
       user: {
         id: user.id,
         type: userType,
+        role: user.userType,
       },
     };
 
@@ -151,18 +157,26 @@ exports.logInSellerUser = async (req, res) => {
       (error, token) => {
         if (error) {
           res.status(401).json({
-            message: "Auth Failed",
-            error: error.message,
+            status: 401,
+            message: "Jwt signing error",
+            loaderStatus: "complete", // Indicate loading is complete
           });
         }
         res.status(200).json({
+          status: 200,
+          message: "Login Successful",
           token: token,
           expiresIn: 3600,
+          loaderStatus: "complete", // Indicate loading is complete
         });
       }
     );
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      status: 500,
+      message: "Internal Server Error",
+      loaderStatus: "complete", // Indicate loading is complete
+    });
   }
 };
 
@@ -175,7 +189,8 @@ exports.forgotPassword = async (req, res) => {
 
     if (!user) {
       console.log("User not found for email:=>", email);
-      return res.status(400).json({
+      return res.status(401).json({
+        status: 401,
         message: "User not found",
       });
     }
@@ -194,18 +209,21 @@ exports.forgotPassword = async (req, res) => {
       console.log("Password reset email triggered for:=>", user.email);
 
       res.status(200).json({
+        status: 200,
         message: "Password reset email sent",
       });
     } catch (saveError) {
       if (saveError.name === "ValidationError") {
         console.log("Validation Error:=>", saveError.errors);
         res.status(400).json({
+          status: 400,
           message: "Validation Error",
           errors: saveError.errors,
         });
       } else {
         console.log("Error saving user:=>", saveError);
         res.status(500).json({
+          status: 500,
           error: saveError.message,
           details: saveError.errors,
         });
@@ -214,6 +232,7 @@ exports.forgotPassword = async (req, res) => {
   } catch (error) {
     console.log("Error in forgot password process:=>", error);
     res.status(500).json({
+      status: 500,
       error: error.message,
     });
   }
@@ -226,6 +245,7 @@ exports.resetPassword = async (req, res) => {
 
     if (newPassword !== confirmNewPassword) {
       return res.status(400).json({
+        status: 400,
         message: "Passwords do not match",
       });
     }
@@ -237,7 +257,8 @@ exports.resetPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(401).json({
+        status: 401,
         message: "Invalid or expired token",
       });
     }
@@ -249,6 +270,7 @@ exports.resetPassword = async (req, res) => {
     await user.save();
 
     res.status(200).json({
+      status: 200,
       message: "Password has been reset",
     });
     // res.sendFile(
@@ -256,7 +278,8 @@ exports.resetPassword = async (req, res) => {
     // );
   } catch (error) {
     res.status(500).json({
-      error: error.message,
+      status: 500,
+      message: error.message,
     });
   }
 };

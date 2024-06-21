@@ -5,6 +5,7 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/appServices/auth.service';
 
@@ -24,7 +25,11 @@ export class SigninComponent implements OnInit, OnDestroy {
     { value: 'user', label: 'User' },
   ];
 
-  constructor(private fb: FormBuilder, private _authService: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private _authService: AuthService,
+    private toastr: ToastrService
+  ) {
     this.logInForm = this.fb.group({
       userType: new FormControl('user', [Validators.required]),
       email: new FormControl('', [Validators.required]),
@@ -51,6 +56,11 @@ export class SigninComponent implements OnInit, OnDestroy {
       const password = this.logInForm.value.password;
 
       this._authService.signin(userType, email, password);
+    } else {
+      this.toastr.error('Please fill out the form correctly.', 'Error', {
+        toastClass: 'ngx-toastr custom-toast-error',
+        positionClass: 'toast-top-right',
+      });
     }
     this.logInForm.reset();
   }

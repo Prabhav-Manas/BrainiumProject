@@ -6,7 +6,21 @@ const app = express();
 const sellerUserRoute = require("./routes/seller-user");
 const { ValidationError } = require("express-validation");
 
-app.use(cors());
+// CORS configuration
+const corsOptions = {
+  origin: "http://localhost:4200", // Your frontend origin
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Origin",
+    "X-Requested-With",
+    "Accept",
+  ],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -18,22 +32,22 @@ mongoose
   .then(() => {
     console.log("Connected To Database");
   })
-  .catch(() => {
-    console.log("Connection Failed!");
+  .catch((error) => {
+    console.error("Connection Failed!", error);
   });
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, PATCH, PUT, POST, DELETE, OPTIONS"
-  );
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Origin X-Requested-With, Content-Type, Accept, Authorization"
+//   );
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, PATCH, PUT, POST, DELETE, OPTIONS"
+//   );
+//   next();
+// });
 
 app.use("/api/user", sellerUserRoute);
 

@@ -53,24 +53,12 @@ export class ResetPasswordComponent implements OnInit {
       const confirmNewPassword =
         this.resetPasswordForm.value.confirmNewPassword;
 
-      this._authService
-        .resetPassword({
-          userId: this.userId,
-          token: this.token,
-          newPassword,
-          confirmNewPassword,
-        })
-        .subscribe(
-          (res) => {
-            console.log('Password Reset Successfull:=>', res);
-            alert('Password Reset Successfull');
-            this.router.navigate(['/signin']);
-          },
-          (error) => {
-            console.log('Error reset password', error);
-            this.errorMessage = error.error.message;
-          }
-        );
+      this._authService.resetPassword({
+        userId: this.userId,
+        token: this.token,
+        newPassword,
+        confirmNewPassword,
+      });
     }
     this.resetPasswordForm.reset();
   }

@@ -5,6 +5,7 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/appServices/auth.service';
 
 @Component({
@@ -23,7 +24,11 @@ export class SignupComponent implements OnInit {
     { value: 'user', label: 'User' },
   ];
 
-  constructor(private fb: FormBuilder, private _authService: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private _authService: AuthService,
+    private toastr: ToastrService
+  ) {
     this.regForm = this.fb.group({
       userType: new FormControl('user', [Validators.required]),
       firstName: new FormControl('', [Validators.required]),
@@ -92,6 +97,11 @@ export class SignupComponent implements OnInit {
         gstNumber
       );
       console.log(this.regForm.value);
+    } else {
+      this.toastr.error('Please fill ou the form correctly.', 'Error', {
+        toastClass: 'ngx-toastr custom-toast-error',
+        positionClass: 'toast-top-right',
+      });
     }
     this.regForm.reset();
   }

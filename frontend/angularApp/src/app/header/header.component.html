@@ -1,32 +1,77 @@
-<nav
-  class="navbar navbar-expand-lg navbar-light bg-light"
-  *ngIf="userIsAuthenticated"
->
-  <div class="container-fluid">
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarTogglerDemo01"
-      aria-controls="navbarTogglerDemo01"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-      <a class="navbar-brand">Dashboard</a>
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link pointer">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link pointer">About</a>
-        </li>
-        <li class="nav-item floatItem">
-          <a class="nav-link pointer" (click)="onLogOut()">Logout</a>
-        </li>
-      </ul>
+<ng-container *ngIf="userIsAuthenticated">
+  <!-- SIDE-BARS -->
+  <div
+    class="sidenav"
+    *ngIf="isSeller"
+    [ngClass]="collapsed ? 'sidenav-collapsed' : ''"
+  >
+    <div class="logo-container">
+      <button class="logo" (click)="toggleCollapsed()">A</button>
+      <div class="logo-text" *ngIf="collapsed">Angular</div>
+      <button class="btn-close" *ngIf="collapsed" (click)="closeSideNav()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
     </div>
+    <ul class="sidenav-nav">
+      <li class="sidenav-nav-item" *ngFor="let data of navData">
+        <a
+          class="side-nav-link"
+          [routerLink]="[data.routeLink]"
+          *ngIf="!data.subMenu"
+          (click)="data.routeLink === 'logout' ? onLogOut() : null"
+        >
+          <i class="sidenav-link-icon" [class]="data.icon"></i>
+          <span class="sidenav-link-text" *ngIf="collapsed">{{
+            data.label
+          }}</span>
+        </a>
+        <div *ngIf="data.subMenu">
+          <a class="side-nav-link" (click)="toggleMenu(data)">
+            <i class="sidenav-link-icon" [class]="data.icon"></i>
+            <span class="sidenav-link-text" *ngIf="collapsed">{{
+              data.label
+            }}</span>
+          </a>
+          <div class="sub-menu" *ngIf="collapsed && data.open">
+            <a class="side-nav-link" *ngFor="let sub of data.subMenu">
+              <i class="sidenav-link-icon" [class]="sub.icon"></i>
+              <span [routerLink]="[sub.routeLink]">{{ sub.label }}</span>
+            </a>
+          </div>
+        </div>
+      </li>
+    </ul>
   </div>
-</nav>
+  <!-- SIDE-BARS -->
+
+  <!-- Navbar for Non-Sellers -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" *ngIf="!isSeller">
+    <div class="container-fluid">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarTogglerDemo01"
+        aria-controls="navbarTogglerDemo01"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        <a class="navbar-brand">Dashboard</a>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link pointer">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link pointer">About</a>
+          </li>
+          <li class="nav-item floatItem">
+            <a class="nav-link pointer" (click)="onLogOut()">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</ng-container>
