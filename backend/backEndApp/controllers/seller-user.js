@@ -20,7 +20,7 @@ exports.createSellerUser = async (req, res) => {
       lastName: req.body.lastName,
       email: req.body.email,
       password: hashPassword,
-      countryCode: req.body.countryCode,
+      // countryCode: req.body.countryCode,
       phone: req.body.phone,
       userType: userType,
     };

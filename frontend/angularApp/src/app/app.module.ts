@@ -5,29 +5,46 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+// import { MatDatepickerModule } from '@angular/material/datepicker';
+// import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { AppComponent } from './app.component';
 import { SignupComponent } from './authentication/signup/signup.component';
 import { SigninComponent } from './authentication/signin/signin.component';
 import { AuthInterceptor } from './authentication/auth-interceptor';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { HeaderComponent } from './header/header.component';
 import { VerifyUserComponent } from './verify-user/verify-user.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { LoaderComponent } from './loader/loader.component';
+import { SellerDashboardComponent } from './seller-dashboard/seller-dashboard.component';
+import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
+import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
+import { AddProductComponent } from './Products/add-product/add-product.component';
+import { ProductListComponent } from './Products/product-list/product-list.component';
+import { CategoryListComponent } from './Category/category-list/category-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SignupComponent,
     SigninComponent,
-    DashboardComponent,
     HeaderComponent,
     VerifyUserComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
     LoaderComponent,
+    SellerDashboardComponent,
+    UserDashboardComponent,
+    AddProductComponent,
+    ProductListComponent,
+    CategoryListComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,6 +58,15 @@ import { LoaderComponent } from './loader/loader.component';
       positionClass: 'toast-top-right',
       preventDuplicates: true,
     }),
+    NgxMatIntlTelInputComponent,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    // MatDatepickerModule,
+    // MatNativeDateModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatPaginatorModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

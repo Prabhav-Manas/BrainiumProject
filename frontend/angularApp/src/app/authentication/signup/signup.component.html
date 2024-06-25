@@ -141,43 +141,28 @@
         </div>
 
         <!-- Country Code & Phone -->
-        <div class="d-md-flex mb-4">
-          <div class="col-md-6">
-            <label for="code" class="form-label textColor">Country Code</label>
-            <input
-              type="text"
-              class="form-control relative"
-              id="code"
-              formControlName="countryCode"
-              [ngClass]="{'is-invalid':regForm.controls?.['countryCode']?.invalid && regForm.controls?.['countryCode']?.touched}"
-              (keydown)="Space($event)"
-            />
-            <small
-              *ngIf="regForm.controls?.['countryCode']?.errors?.['required']"
-              class="invalid-feedback text-danger"
-            >
-              Country Code is required.
-            </small>
-          </div>
-          &nbsp;
-          <div class="col-md-6">
-            <label for="phone" class="form-label textColor">Phone</label>
-            <input
-              type="text"
-              class="form-control relative"
-              id="phone"
+        <div class="d-md-flex justify-content-between mb-4">
+          <mat-form-field class="custom-height">
+            <mat-label>Phone Number</mat-label>
+            <ngx-mat-intl-tel-input
               formControlName="phone"
-              oninput="value = this.value.replace(/[^0-9\-]+/g, '').replace(/(\..*)\./g, '$1')"
-              [ngClass]="{'is-invalid':regForm.controls?.['phone']?.invalid && regForm.controls?.['phone']?.touched}"
-              (keydown)="Space($event)"
-            />
-            <small
-              *ngIf="regForm.controls?.['phone']?.errors?.['required']"
-              class="invalid-feedback text-danger"
-            >
-              Phone is required.
-            </small>
-          </div>
+              [preferredCountries]="['us', 'gb']"
+              [enablePlaceholder]="true"
+              [enableSearch]="true"
+              id="phone"
+              name="phone"
+              class="matInp relative"
+              [ngClass]="{'is-invalid': regForm.controls?.['phone']?.invalid && regForm.controls?.['phone']?.touched}"
+            ></ngx-mat-intl-tel-input>
+            <mat-icon matSuffix>phone</mat-icon>
+            <mat-hint>Include area code</mat-hint>
+          </mat-form-field>
+          <small
+            *ngIf="regForm.controls?.['phone']?.errors?.['required']"
+            class="invalid-feedback text-danger"
+          >
+            Phone Number is required.
+          </small>
         </div>
 
         <!-- Business Name & GST Number -->

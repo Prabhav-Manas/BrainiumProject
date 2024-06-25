@@ -1,0 +1,108 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6" *ngFor="let product of products">
+      <div class="card mb-3">
+        <h5 class="card-header">{{ product.productName }}</h5>
+        <div class="card-body">
+          <h5 class="card-title">{{ product.category }}</h5>
+          <p class="card-text">{{ product.description }}</p>
+          <p class="card-text"><strong>Price:</strong> {{ product.price }}</p>
+          <div class="d-md-flex justify-content-around">
+            <a href="#" class="btn btn-primary">View Details</a>
+            <i
+              class="fa fa-pencil-square-o edit"
+              aria-hidden="true"
+              (click)="onEditProduct(product)"
+            ></i>
+            <i
+              class="fa fa-trash trash"
+              aria-hidden="true"
+              (click)="onDeleteProduct(product)"
+            ></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<mat-paginator
+  [length]="totalProducts"
+  [pageSize]="productsPerPage"
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  (page)="onPageChanged($event)"
+>
+</mat-paginator>
+
+<!-- Update Form -->
+<!-- Add this below the product cards and paginator -->
+<div *ngIf="editingProduct">
+  <div class="col-md-6 m-auto shadow my-5 p-4">
+    <form [formGroup]="updateProductForm" (ngSubmit)="onUpdateProduct()">
+      <h1 class="text-success">Update Product</h1>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input id="category" formControlName="category" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label for="productName">Product Name</label>
+        <input
+          id="productName"
+          formControlName="productName"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          class="form-control"
+        ></textarea>
+      </div>
+      <div class="form-group">
+        <label for="price">Price</label>
+        <input
+          id="price"
+          type="number"
+          formControlName="price"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="startDate">Start Date</label>
+        <input
+          id="startDate"
+          type="date"
+          formControlName="startDate"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="closeDate">Close Date</label>
+        <input
+          id="closeDate"
+          type="date"
+          formControlName="closeDate"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="discount">Discount</label>
+        <input
+          id="discount"
+          type="number"
+          formControlName="discount"
+          class="form-control"
+        />
+      </div>
+      <button type="submit" class="btn btn-success">Update Product</button>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="editingProduct = null; updateProductForm.reset()"
+      >
+        Cancel
+      </button>
+    </form>
+  </div>
+</div>

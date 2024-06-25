@@ -5,16 +5,16 @@ export const navBarData = [
     label: 'Dashboard',
   },
   {
-    routeLink: 'add-product',
-    icon: 'fa fa-plus-square-o',
-    label: 'Add Product',
-  },
-  {
     routeLink: 'product',
     icon: 'fa fa-shopping-bag',
     label: 'Product',
     open: false,
     subMenu: [
+      {
+        routeLink: 'add-product',
+        icon: 'fa fa-plus-square-o',
+        label: 'Add Product',
+      },
       {
         routeLink: 'product-list',
         icon: 'fa fa-list',

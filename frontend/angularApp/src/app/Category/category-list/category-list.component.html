@@ -1,0 +1,61 @@
+<div class="container">
+  <h1 class="my-4">Categories</h1>
+
+  <!-- Add Category Form -->
+  <form [formGroup]="categoryForm" (ngSubmit)="onAddCategory()">
+    <div class="form-group">
+      <input
+        formControlName="name"
+        class="form-control"
+        placeholder="New Category"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary my-2">Add Category</button>
+  </form>
+
+  <!-- Edit Category Form -->
+  <div *ngIf="editingCategory">
+    <form [formGroup]="categoryForm" (ngSubmit)="onEditCategory()">
+      <div class="form-group">
+        <input
+          formControlName="name"
+          class="form-control"
+          placeholder="Edit Category"
+        />
+      </div>
+      <button type="submit" class="btn btn-success my-2">Update Category</button
+      >&nbsp;&nbsp;
+      <button
+        type="button"
+        class="btn btn-secondary my-2"
+        (click)="onCancelEdit()"
+      >
+        Cancel
+      </button>
+    </form>
+  </div>
+
+  <!-- Categories List -->
+  <ul class="list-group">
+    <li
+      *ngFor="let category of categories"
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      {{ category.name }}
+      <div>
+        <button
+          class="btn btn-sm btn-primary"
+          (click)="onStartEditCategory(category)"
+        >
+          Edit</button
+        >&nbsp;&nbsp;
+        <button
+          class="btn btn-sm btn-danger"
+          (click)="onDeleteCategory(category._id)"
+        >
+          Delete
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>

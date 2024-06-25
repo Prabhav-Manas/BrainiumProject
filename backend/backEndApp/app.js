@@ -4,6 +4,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const app = express();
 const sellerUserRoute = require("./routes/seller-user");
+const productRoute = require("./routes/product");
+const categoryRoute = require("./routes/category");
 const { ValidationError } = require("express-validation");
 
 // CORS configuration
@@ -50,6 +52,8 @@ mongoose
 // });
 
 app.use("/api/user", sellerUserRoute);
+app.use("/api/product", productRoute);
+app.use("/api/category", categoryRoute);
 
 // ---Error Handling Middleware in Express-Validation---
 app.use(function (err, req, res, next) {

@@ -7,6 +7,12 @@ import {
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/appServices/auth.service';
+import {
+  MAT_FORM_FIELD,
+  MatFormFieldControl,
+  MatFormFieldModule,
+} from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-signup',
@@ -35,7 +41,7 @@ export class SignupComponent implements OnInit {
       lastName: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
-      countryCode: new FormControl('', [Validators.required]),
+      // countryCode: new FormControl('', [Validators.required]),
       phone: new FormControl('', [Validators.required]),
       businessName: new FormControl('', []),
       gstNumber: new FormControl('', []),
@@ -80,7 +86,7 @@ export class SignupComponent implements OnInit {
       const lastName = this.regForm.value.lastName;
       const email = this.regForm.value.email;
       const password = this.regForm.value.password;
-      const countryCode = this.regForm.value.countryCode;
+      // const countryCode = this.regForm.value.countryCode;
       const phone = this.regForm.value.phone;
       const businessName = this.regForm.value.businessName;
       const gstNumber = this.regForm.value.gstNumber;
@@ -91,7 +97,7 @@ export class SignupComponent implements OnInit {
         lastName,
         email,
         password,
-        countryCode,
+        // countryCode,
         phone,
         businessName,
         gstNumber

@@ -16,6 +16,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private authListenerSubs!: Subscription;
   isSeller: boolean = false;
 
+  isProductMenuOpen: boolean = false;
+  isCategoryMenuOpen: boolean = false;
+
   constructor(private _authService: AuthService) {}
 
   ngOnInit(): void {
@@ -29,16 +32,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         const userRole = this._authService.getUserRole();
         this.isSeller = userRole === 'seller';
       });
-
-    // ----SideBars----
-    // const toggleButton = document.getElementById('menu-toggle');
-    // const wrapper = document.getElementById('wrapper');
-
-    // toggleButton?.addEventListener('click', (e) => {
-    //   e.preventDefault();
-    //   wrapper?.classList.toggle('toggled');
-    // });
-    // // ----SideBars----
   }
 
   toggleCollapsed() {
@@ -49,17 +42,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.collapsed = false;
   }
 
-  toggleMenu(data: any) {
-    if (data.subMenu) {
-      data.open = !data.open;
-    }
-  }
-
   ngOnDestroy(): void {
     // this.authListenerSubs.unsubscribe();
-  }
-
-  onLogOut() {
-    this._authService.logOut();
   }
 }

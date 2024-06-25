@@ -7,7 +7,7 @@ const registerValidation = {
     lastName: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
-    countryCode: Joi.string().required(),
+    // countryCode: Joi.string().required(),
     phone: Joi.string().required(),
     userType: Joi.string().valid("user", "seller").required(),
     businessName: Joi.string().when("userType", {

@@ -1,0 +1,86 @@
+<!-- SIDE-BARS -->
+<div class="sidenav" [ngClass]="collapsed ? 'sidenav-collapsed' : ''">
+  <div class="logo-container">
+    <button class="logo" (click)="toggleCollapsed()">A</button>
+    <div class="logo-text" *ngIf="collapsed">Angular</div>
+    <button class="btn-close" *ngIf="collapsed" (click)="closeSideNav()">
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </button>
+  </div>
+  <ul class="sidenav-nav">
+    <!-- Dashboard Link -->
+    <li class="sidenav-nav-item">
+      <a class="side-nav-link" [routerLink]="['/dashboard']">
+        <i class="sidenav-link-icon fa fa-home"></i>
+        <span class="sidenav-link-text" *ngIf="collapsed">Dashboard</span>
+      </a>
+    </li>
+    <!-- Product Link with Submenu -->
+    <li class="sidenav-nav-item">
+      <a class="side-nav-link" (click)="toggleMenu('product')">
+        <i class="sidenav-link-icon fa fa-shopping-bag"></i>
+        <span class="sidenav-link-text" *ngIf="collapsed">Product</span>
+      </a>
+      <div class="sub-menu" *ngIf="collapsed && isProductMenuOpen">
+        <a class="side-nav-link" routerLink="/add-product">
+          <i class="sidenav-link-icon fa fa-plus-square-o"></i>
+          <span>Add Product</span>
+        </a>
+        <a class="side-nav-link" [routerLink]="['/product-list']">
+          <i class="sidenav-link-icon fa fa-list"></i>
+          <span>Product List</span>
+        </a>
+      </div>
+    </li>
+    <!-- Category Link with Submenu -->
+    <li class="sidenav-nav-item">
+      <a class="side-nav-link" (click)="toggleMenu('category')">
+        <i class="sidenav-link-icon fa fa-object-group"></i>
+        <span class="sidenav-link-text" *ngIf="collapsed">Category</span>
+      </a>
+      <div class="sub-menu" *ngIf="collapsed && isCategoryMenuOpen">
+        <a class="side-nav-link" [routerLink]="['/category-list']">
+          <i class="sidenav-link-icon fa fa-list"></i>
+          <span>Category List</span>
+        </a>
+      </div>
+    </li>
+    <!-- Logout Link -->
+    <li class="sidenav-nav-item">
+      <a class="side-nav-link" (click)="onLogOut()">
+        <i class="sidenav-link-icon fa fa-power-off"></i>
+        <span class="sidenav-link-text" *ngIf="collapsed">Logout</span>
+      </a>
+    </li>
+  </ul>
+</div>
+<!-- SIDE-BARS -->
+
+<!-- Modal
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div> -->

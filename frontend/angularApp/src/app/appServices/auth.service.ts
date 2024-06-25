@@ -36,6 +36,20 @@ export class AuthService {
     this._loaderService.hide();
   }
 
+  private showSuccess(message: string) {
+    this.toastr.success(message, 'Success', {
+      toastClass: 'ngx-toastr custom-toast-success',
+      positionClass: 'toast-top-right',
+    });
+  }
+
+  private showError(message: string) {
+    this.toastr.error(message, 'Error', {
+      toastClass: 'ngx-toastr custom-toast-error',
+      positionClass: 'toast-top-right',
+    });
+  }
+
   getAuthToken() {
     return this.token;
   }
@@ -48,13 +62,22 @@ export class AuthService {
     return this.authStatusListener.asObservable();
   }
 
+  getUserId(): string | null {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.user._id;
+    }
+    return null;
+  }
+
   signUp(
     userType: string,
     firstName: string,
     lastName: string,
     email: string,
     password: string,
-    countryCode: string,
+    // countryCode: string,
     phone: string,
     businessName: string,
     gstNumber: string
@@ -65,7 +88,7 @@ export class AuthService {
       lastName: lastName,
       email: email,
       password: password,
-      countryCode: countryCode,
+      // countryCode: countryCode,
       phone: phone,
       businessName: businessName,
       gstNumber: gstNumber,
@@ -75,25 +98,17 @@ export class AuthService {
       .post<AuthResponse>(`${this.baseUrl}/signup`, authData)
       .subscribe(
         (res) => {
-          this.hideLoader(); // Hide loader on successful response
+          this.hideLoader();
           if (res.status === 201) {
-            this.toastr.success(res.message, 'Success', {
-              toastClass: 'ngx-toastr custom-toast-success',
-              positionClass: 'toast-top-right',
-            });
+            this.showSuccess(res.message);
           }
-          // Optionally, navigate to another route or perform additional actions
           this.router.navigate(['/']);
         },
         (err: any) => {
-          this.hideLoader(); // Hide loader on error response
+          this.hideLoader();
           if (err.status === 400 || err.status === 401 || err.status === 500) {
-            this.toastr.error(err.error.message || 'Unknown error', 'Error', {
-              toastClass: 'ngx-toastr custom-toast-error',
-              positionClass: 'toast-top-right',
-            });
+            this.showError(err.error.message || 'Unknown error');
           } else {
-            // Handle other error cases as needed
             console.error('Error occurred:', err);
           }
         }
@@ -108,7 +123,7 @@ export class AuthService {
     };
 
     const headers = {
-      'Content-Type': 'application/json', // Ensure correct content type
+      'Content-Type': 'application/json',
       // Add other headers if required (e.g., Authorization)
     };
 
@@ -135,12 +150,13 @@ export class AuthService {
                 now.getTime() + expiresInDuration * 1000
               );
               this.saveAuthData(this.token, expirationDate, this.userRole);
-              this.toastr.success(res.message, 'Success', {
-                toastClass: 'ngx-toastr custom-toast-success',
-                positionClass: 'toast-top-right',
-              });
+              this.showSuccess(res.message);
             }
-            this.router.navigate(['/dashboard']);
+            if (this.userRole === 'seller') {
+              this.router.navigate(['/seller-dashboard']);
+            } else {
+              this.router.navigate(['/user-dashboard']);
+            }
           }
         },
         (err: HttpErrorResponse) => {
@@ -148,15 +164,9 @@ export class AuthService {
           this.hideLoader();
           if (err.status === 400 || err.status === 401 || err.status === 500) {
             this.hideLoader();
-            this.toastr.error(err.message, 'Error', {
-              toastClass: 'ngx-toastr custom-toast-error',
-              positionClass: 'toast-top-right',
-            });
+            this.showError(err.error.message || 'Unknown error');
           } else {
-            this.toastr.error('An unexpected error occured!', 'Error', {
-              toastClass: 'ngx-toastr custom-toast-error',
-              positionClass: 'toast-top-right',
-            });
+            this.showError(err.error.message || 'An unexpected error occured');
           }
         }
       );
@@ -164,7 +174,6 @@ export class AuthService {
 
   autoAuthData() {
     const authInformation = this.getAuthData();
-    console.log('Retrieved auth information:', authInformation); // Add this line for debugging
     if (!authInformation) {
       // Handle the case when authInformation is undefined
       return;
@@ -212,8 +221,7 @@ export class AuthService {
     const token = localStorage.getItem('token');
     const expirationDate = localStorage.getItem('expiration');
     const userRole = localStorage.getItem('userRole');
-    console.log('Token:', token); // Add this line for debugging
-    console.log('Expiration Date:', expirationDate); // Add this line for debugging
+
     if (!token || !expirationDate || !userRole) {
       return null;
     } else {
@@ -235,18 +243,12 @@ export class AuthService {
       .subscribe(
         (res) => {
           if (res.status === 200) {
-            this.toastr.success(res.message, 'Success', {
-              toastClass: 'ngx-toastr custom-toast-success',
-              positionClass: 'toast-top-right',
-            });
+            this.showSuccess(res.message);
           }
         },
         (err: HttpErrorResponse) => {
           if (err.status === 400 || err.status === 401 || err.status === 500) {
-            this.toastr.error(err.error.message, 'Error', {
-              toastClass: 'ngx-toastr custom-toast-error',
-              positionClass: 'toast-top-right',
-            });
+            this.showError(err.error.message || 'Unknown error');
           }
         }
       );
@@ -263,18 +265,12 @@ export class AuthService {
       .subscribe(
         (res) => {
           if (res.status === 200) {
-            this.toastr.success(res.message, 'Success', {
-              toastClass: 'ngx-toastr custom-toast-success',
-              positionClass: 'toast-top-right',
-            });
+            this.showSuccess(res.message);
           }
         },
         (err: HttpErrorResponse) => {
           if (err.status === 400 || err.status === 401 || err.status === 500) {
-            this.toastr.error(err.error.message, 'Error', {
-              toastClass: 'ngx-toastr custom-toast-error',
-              positionClass: 'toast-top-right',
-            });
+            this.showError(err.error.message || 'Unknown error');
           }
         }
       );
