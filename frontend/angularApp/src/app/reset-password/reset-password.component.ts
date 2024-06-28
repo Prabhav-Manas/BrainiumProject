@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../appServices/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-reset-password',
@@ -53,12 +54,23 @@ export class ResetPasswordComponent implements OnInit {
       const confirmNewPassword =
         this.resetPasswordForm.value.confirmNewPassword;
 
-      this._authService.resetPassword({
-        userId: this.userId,
-        token: this.token,
-        newPassword,
-        confirmNewPassword,
-      });
+      this._authService
+        .resetPassword({
+          userId: this.userId,
+          token: this.token,
+          newPassword,
+          confirmNewPassword,
+        })
+        .subscribe(
+          (res) => {
+            if (res.status === 200) {
+              this._authService.showSuccess(res.message);
+            }
+          },
+          (error: HttpErrorResponse) => {
+            this._authService.handleError(error);
+          }
+        );
     }
     this.resetPasswordForm.reset();
   }

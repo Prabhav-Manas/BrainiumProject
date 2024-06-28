@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../appServices/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-forgot-password',
@@ -24,8 +25,6 @@ export class ForgotPasswordComponent implements OnInit {
   ngOnInit(): void {}
 
   Space(event: any) {
-    console.log(event);
-    console.log(event.target.selectionStart);
     if (event.target.selectionStart === 0 && event.code === 'Space') {
       event.preventDefault();
     }
@@ -35,7 +34,16 @@ export class ForgotPasswordComponent implements OnInit {
     if (this.forgotPasswordForm.valid) {
       const email = this.forgotPasswordForm.value.email;
 
-      this._authService.forgotPassword(email);
+      this._authService.forgotPassword(email).subscribe(
+        (response) => {
+          if (response.status === 200) {
+            this._authService.showSuccess(response.message);
+          }
+        },
+        (error: HttpErrorResponse) => {
+          this._authService.handleError(error);
+        }
+      );
     }
     this.forgotPasswordForm.reset();
   }

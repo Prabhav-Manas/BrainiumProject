@@ -118,7 +118,7 @@
         </div>
 
         <!-- Country Code & Phone -->
-        <!-- <div class="d-md-flex justify-content-between mb-4">
+        <div class="d-md-flex justify-content-between mb-4">
           <mat-form-field class="custom-height">
             <mat-label>Phone Number</mat-label>
             <ngx-mat-intl-tel-input
@@ -140,7 +140,7 @@
           >
             Phone Number is required.
           </small>
-        </div> -->
+        </div>
 
         <!-- Business Name & GST Number -->
         <div class="d-md-flex mb-4" *ngIf="seller">
@@ -184,6 +184,27 @@
               GST Number is required.
             </small>
           </div>
+        </div>
+
+        <!-- Category -->
+        <div class="mb-4" *ngIf="seller">
+          <h4>Select Category</h4>
+          <mat-form-field>
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="categoryId" required>
+              <mat-option
+                *ngFor="let category of categories"
+                [value]="category._id"
+              >
+                {{ category.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="regForm.controls?.['categoryId']?.hasError('required')"
+            >
+              Category is required.
+            </mat-error>
+          </mat-form-field>
         </div>
 
         <div class="d-md-flex justify-content-between">

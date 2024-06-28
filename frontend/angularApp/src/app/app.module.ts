@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
 
 import { AppComponent } from './app.component';
 import { SignupComponent } from './authentication/signup/signup.component';
@@ -67,6 +68,7 @@ import { CategoryListComponent } from './Category/category-list/category-list.co
     MatDatepickerModule,
     MatNativeDateModule,
     MatPaginatorModule,
+    MatSelectModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

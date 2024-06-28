@@ -27,21 +27,11 @@ export class ProductService {
     productData.append('startDate', startDate);
     productData.append('closeDate', closeDate);
     productData.append('discount', discount.toString());
-    // productData.append('images', images);
 
     for (let i = 0; i < images.length; i++) {
       productData.append('images', images[i], images[i].name);
     }
 
-    // const productData = {
-    //   category,
-    //   productName,
-    //   description,
-    //   price,
-    //   startDate,
-    //   closeDate,
-    //   discount,
-    // };
     return this.http.post(
       'http://localhost:8080/api/product/add-product',
       productData

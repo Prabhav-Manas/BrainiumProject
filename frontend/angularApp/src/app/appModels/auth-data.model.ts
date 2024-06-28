@@ -4,8 +4,8 @@ export interface AuthData {
   lastName?: string;
   email: string;
   password: string;
-  // countryCode?: string;
-  // phone?: string;
+  phone?: string;
   businessName?: string;
   gstNumber?: string;
+  categoryId?: string;
 }

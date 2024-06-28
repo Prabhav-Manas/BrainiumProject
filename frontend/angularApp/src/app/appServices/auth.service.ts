@@ -6,7 +6,7 @@ import {
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, catchError, tap } from 'rxjs';
+import { Subject } from 'rxjs';
 import { AuthData } from 'src/app/appModels/auth-data.model';
 import { AuthResponse } from '../appModels/auth-response.model';
 import { LoaderService } from './loader.service';
@@ -32,26 +32,30 @@ export class AuthService {
     private _loaderService: LoaderService
   ) {}
 
-  showLoader() {
+  public showLoader() {
     this._loaderService.show();
   }
 
-  hideLoader() {
+  public hideLoader() {
     this._loaderService.hide();
   }
 
-  private showSuccess(message: string) {
+  public showSuccess(message: string) {
     this.toastr.success(message, 'Success', {
       toastClass: 'ngx-toastr custom-toast-success',
       positionClass: 'toast-top-right',
     });
   }
 
-  private showError(message: string) {
+  public showError(message: string) {
     this.toastr.error(message, 'Error', {
       toastClass: 'ngx-toastr custom-toast-error',
       positionClass: 'toast-top-right',
     });
+  }
+
+  public getAuthStatusListener() {
+    return this.authStatusListener.asObservable();
   }
 
   getAuthToken() {
@@ -60,10 +64,6 @@ export class AuthService {
 
   getIsAuth() {
     return this.isAuthenticated;
-  }
-
-  getAuthStatusListener() {
-    return this.authStatusListener.asObservable();
   }
 
   getUserId(): string | null {
@@ -75,113 +75,88 @@ export class AuthService {
     return null;
   }
 
-  signUp(
-    userType: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-    // countryCode: string,
-    // phone: string,
-    businessName: string,
-    gstNumber: string
-  ) {
-    const authData: AuthData = {
-      userType: userType,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: password,
-      // countryCode: countryCode,
-      // phone: phone,
-      businessName: businessName,
-      gstNumber: gstNumber,
-    };
-    this.showLoader();
+  // ----SignUp----
+  signUp(bodyData: AuthData, url: string = 'signup', loader: boolean = true) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http
-      .post<AuthResponse>(`${this.baseUrl}/signup`, authData, { headers })
-      .subscribe(
-        (res) => {
-          this.hideLoader();
-          if (res.status === 201) {
-            this.showSuccess(res.message);
-          }
-          this.router.navigate(['/']);
-        },
-        (err: any) => {
-          this.hideLoader();
-          if (err.status === 400 || err.status === 401 || err.status === 500) {
-            this.showError(err.error.message || 'Unknown error');
-          } else {
-            console.error('Error occurred:', err);
-          }
-        }
-      );
+    if (loader) {
+      this.showLoader();
+    }
+    return this.http.post<AuthResponse>(`${this.baseUrl}/${url}`, bodyData, {
+      headers,
+    });
   }
 
-  signin(userType: string, email: string, password: string) {
-    const authData: AuthData = {
-      userType: userType,
-      email: email,
-      password: password,
-    };
-
-    const headers = {
-      'Content-Type': 'application/json',
-      // Add other headers if required (e.g., Authorization)
-    };
-
-    this.showLoader();
-    return this.http
-      .post<AuthResponse>(`${this.baseUrl}/signin`, authData, {
-        headers: headers,
-      })
-      .subscribe(
-        (res) => {
-          this.hideLoader();
-          if (res.status === 200) {
-            this.token = res.token!;
-            if (this.token) {
-              const decodedToken: any = jwtDecode(this.token);
-              console.log('jwtDecode:=>', decodedToken);
-              this.userRole = decodedToken.user.role;
-              const expiresInDuration = res.expiresIn ?? 3600; // Default to 1 hr if undefined
-              this.setAuthTimer(expiresInDuration);
-              this.isAuthenticated = true;
-              this.authStatusListener.next(true);
-              const now = new Date();
-              const expirationDate = new Date(
-                now.getTime() + expiresInDuration * 1000
-              );
-              this.saveAuthData(this.token, expirationDate, this.userRole);
-              this.showSuccess(res.message);
-            }
-            if (this.userRole === 'seller') {
-              this.router.navigate(['/seller-dashboard']);
-            } else {
-              this.router.navigate(['/user-dashboard']);
-            }
-          }
-        },
-        (err: HttpErrorResponse) => {
-          console.log(err);
-          this.hideLoader();
-          if (err.status === 400 || err.status === 401 || err.status === 500) {
-            this.hideLoader();
-            this.showError(err.error.message || 'Unknown error');
-          } else {
-            this.showError(err.error.message || 'An unexpected error occured');
-          }
-        }
-      );
+  // ----SignIn----
+  signin(bodyData: AuthData, url: string = 'signin', loader: boolean = true) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    if (loader) {
+      this.showLoader();
+    }
+    return this.http.post<AuthResponse>(`${this.baseUrl}/${url}`, bodyData, {
+      headers,
+    });
   }
 
-  autoAuthData() {
+  // ----Log Out----
+  logOut() {
+    this.token = '';
+    this.isAuthenticated = false;
+    this.authStatusListener.next(false);
+    clearTimeout(this.tokenTimer);
+    this.clearAuthData();
+    this.router.navigate(['/']);
+  }
+
+  // ----ForgotPassword----
+  forgotPassword(email: string) {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/forgot-password`, {
+      email,
+    });
+  }
+
+  // ----ResetPassword----
+  resetPassword(data: {
+    userId: string;
+    token: string;
+    newPassword: string;
+    confirmNewPassword: string;
+  }) {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/reset-password`, data);
+  }
+
+  // ----Handle Authentication----
+  public handleAuthentication(res: AuthResponse) {
+    this.token = res.token!;
+    if (this.token) {
+      const decodedToken: any = jwtDecode(this.token);
+      console.log('jwtDecode:=>', decodedToken);
+      this.userRole = decodedToken.user.role;
+      const expiresInDuration = res.expiresIn ?? 3600; // Default to 1 hr if undefined
+      this.setAuthTimer(expiresInDuration);
+      this.isAuthenticated = true;
+      this.authStatusListener.next(true);
+      const now = new Date();
+      const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+      this.saveAuthData(this.token, expirationDate, this.userRole);
+      this.showSuccess(res.message);
+    }
+  }
+
+  // ----Handle Error----
+  public handleError(error: HttpErrorResponse) {
+    if (error.status === 400 || error.status === 401 || error.status === 500) {
+      this.showError(error.error.message || 'Unknown error');
+    } else {
+      this.showError(error.error.message || 'An unexpected error occurred');
+    }
+  }
+
+  // ----Auto Authentication----
+  public autoAuthData() {
     const authInformation = this.getAuthData();
     if (!authInformation) {
-      // Handle the case when authInformation is undefined
-      return;
+      this.router.navigate(['/signin']);
+      return; // Handle the case when authInformation is undefined
     }
 
     const now = new Date();
@@ -193,35 +168,38 @@ export class AuthService {
       this.isAuthenticated = true;
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusListener.next(true);
+
+      if (this.userRole === 'seller') {
+        this.router.navigate(['/seller-dashboard']);
+      } else if (this.userRole === 'user') {
+        this.router.navigate(['/user-dashboard']);
+      }
+    } else {
+      this.router.navigate(['/signin']);
     }
   }
 
-  logOut() {
-    this.token = '';
-    this.isAuthenticated = false;
-    this.authStatusListener.next(false);
-    clearTimeout(this.tokenTimer);
-    this.clearAuthData();
-    this.router.navigate(['/']);
-  }
-
-  private setAuthTimer(duration: number) {
+  // ----Set Authentication Timer----
+  public setAuthTimer(duration: number) {
     this.tokenTimer = setTimeout(() => {
       this.logOut();
     }, duration * 1000);
   }
 
-  private saveAuthData(token: string, expirationDate: Date, userRole: string) {
+  // ----Save Authentication Data----
+  public saveAuthData(token: string, expirationDate: Date, userRole: string) {
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
     localStorage.setItem('userRole', userRole);
   }
 
+  // ----Clear Authentication Data----
   private clearAuthData() {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
   }
 
+  // ----Fetch Authentication Data----
   private getAuthData() {
     const token = localStorage.getItem('token');
     const expirationDate = localStorage.getItem('expiration');
@@ -238,64 +216,8 @@ export class AuthService {
     }
   }
 
-  getUserRole() {
+  // ----Fetch User Role----
+  public getUserRole() {
     return this.userRole;
   }
-
-  forgotPassword(email: string) {
-    return this.http
-      .post<AuthResponse>(`${this.baseUrl}/forgot-password`, { email })
-      .subscribe(
-        (res) => {
-          if (res.status === 200) {
-            this.showSuccess(res.message);
-          }
-        },
-        (err: HttpErrorResponse) => {
-          if (err.status === 400 || err.status === 401 || err.status === 500) {
-            this.showError(err.error.message || 'Unknown error');
-          }
-        }
-      );
-  }
-
-  resetPassword(data: {
-    userId: string;
-    token: string;
-    newPassword: string;
-    confirmNewPassword: string;
-  }) {
-    return this.http
-      .post<AuthResponse>(`${this.baseUrl}/reset-password`, data)
-      .subscribe(
-        (res) => {
-          if (res.status === 200) {
-            this.showSuccess(res.message);
-          }
-        },
-        (err: HttpErrorResponse) => {
-          if (err.status === 400 || err.status === 401 || err.status === 500) {
-            this.showError(err.error.message || 'Unknown error');
-          }
-        }
-      );
-  }
 }
-// createGet(params) {
-//   if ((typeof params.loading !== 'undefined'))
-//   this.showLoader();
-//     return new Promise((resolve, reject) => {
-//       const httpOptions = {
-//         headers: new HttpHeaders().set("Content-Type", "application/json").set("x-access-token",this.getLocalData("serviceGenieCustomerToken") || '')
-//       };
-//       this.http.get(params.url, httpOptions).pipe().subscribe(res => {
-//         if ((typeof params.loading !== 'undefined'))
-//         this.hideLoader();
-//         return resolve(res);
-//       }, err => {
-//       if ((typeof params.loading !== 'undefined'))
-//         this.hideLoader();
-//         return reject(err ? err.json() : {});
-//       });
-//     });
-// }

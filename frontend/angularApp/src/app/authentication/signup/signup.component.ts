@@ -13,6 +13,10 @@ import {
   MatFormFieldModule,
 } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { Category } from 'src/app/appModels/category.model';
+import { CategoryService } from 'src/app/appServices/category.service';
+import { AuthData } from 'src/app/appModels/auth-data.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -23,6 +27,7 @@ export class SignupComponent implements OnInit {
   regForm: any = FormGroup;
   hide = 'password';
   seller: boolean = false;
+  categories: Category[] = [];
 
   dropdownOptions = [
     { value: 'Select', label: 'Select' },
@@ -33,7 +38,9 @@ export class SignupComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private _authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private _categoryService: CategoryService,
+    private router: Router
   ) {
     this.regForm = this.fb.group({
       userType: new FormControl('user', [Validators.required]),
@@ -41,10 +48,10 @@ export class SignupComponent implements OnInit {
       lastName: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
-      // countryCode: new FormControl('', [Validators.required]),
-      // phone: new FormControl('', [Validators.required]),
+      phone: new FormControl('', [Validators.required]),
       businessName: new FormControl('', []),
       gstNumber: new FormControl('', []),
+      categoryId: new FormControl('', []),
     });
 
     this.regForm.get('userType')?.valueChanges.subscribe((value: string) => {
@@ -52,16 +59,21 @@ export class SignupComponent implements OnInit {
       if (this.seller) {
         this.regForm.get('businessName').setValidators([Validators.required]);
         this.regForm.get('gstNumber').setValidators([Validators.required]);
+        this.regForm.get('categoryId').setValidators([Validators.required]);
       } else {
         this.regForm.get('businessName').clearValidators();
         this.regForm.get('gstNumber').clearValidators();
+        this.regForm.get('categoryId').clearValidators();
       }
       this.regForm.get('businessName').updateValueAndValidity();
       this.regForm.get('gstNumber').updateValueAndValidity();
+      this.regForm.get('categoryId').updateValueAndValidity();
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.fetchCategories();
+  }
 
   onSeller() {
     this.seller = true;
@@ -69,6 +81,12 @@ export class SignupComponent implements OnInit {
 
   onUser() {
     this.seller = false;
+  }
+
+  fetchCategories() {
+    this._categoryService.getCategories().subscribe((categories) => {
+      this.categories = categories;
+    });
   }
 
   Space(event: any) {
@@ -81,26 +99,30 @@ export class SignupComponent implements OnInit {
 
   onSubmit() {
     if (this.regForm.valid) {
-      const userType = this.regForm.value.userType;
-      const firstName = this.regForm.value.firstName;
-      const lastName = this.regForm.value.lastName;
-      const email = this.regForm.value.email;
-      const password = this.regForm.value.password;
-      // const countryCode = this.regForm.value.countryCode;
-      // const phone = this.regForm.value.phone;
-      const businessName = this.regForm.value.businessName;
-      const gstNumber = this.regForm.value.gstNumber;
+      const authData: AuthData = {
+        userType: this.regForm.value.userType,
+        firstName: this.regForm.value.firstName,
+        lastName: this.regForm.value.lastName,
+        email: this.regForm.value.email,
+        password: this.regForm.value.password,
+        phone: this.regForm.value.phone,
+        businessName: this.regForm.value.businessName,
+        gstNumber: this.regForm.value.gstNumber,
+        categoryId: this.regForm.value.categoryId,
+      };
 
-      this._authService.signUp(
-        userType,
-        firstName,
-        lastName,
-        email,
-        password,
-        // countryCode,
-        // phone,
-        businessName,
-        gstNumber
+      this._authService.signUp(authData).subscribe(
+        (res) => {
+          this._authService.hideLoader();
+          if (res.status === 201) {
+            this._authService.showSuccess(res.message);
+          }
+          this.router.navigate(['/']);
+        },
+        (error) => {
+          this._authService.hideLoader();
+          this._authService.handleError(error);
+        }
       );
       console.log(this.regForm.value);
     } else {

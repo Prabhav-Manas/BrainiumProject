@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/seller-user");
+const Category = require("../models/category");
 const { sendVerificationEmail, sendPasswordResetEmail } = require("../mailer");
 const crypto = require("crypto");
 const path = require("path");
@@ -20,17 +21,14 @@ exports.createSellerUser = async (req, res) => {
       lastName: req.body.lastName,
       email: req.body.email,
       password: hashPassword,
-      // countryCode: req.body.countryCode,
-      // phone: req.body.phone,
+      phone: req.body.phone,
       userType: userType,
     };
 
     if (userType === "seller") {
       userData.businessName = req.body.businessName;
       userData.gstNumber = req.body.gstNumber;
-    } else {
-      userData.businessName = "";
-      userData.gstNumber = "";
+      userData.category = req.body.categoryId;
     }
 
     // ---Generate a verification token---
@@ -43,14 +41,17 @@ exports.createSellerUser = async (req, res) => {
     // Check if categoryId exists in the request body (adjust this based on how categoryId is provided)
     const categoryId = req.body.categoryId; // Assuming categoryId is provided in the request body
 
-    if (!category) {
-      return res.status(404).json({
-        message: "Category Not Found!",
-      });
+    // Validate the categoryId by querying the Category model
+    if (categoryId) {
+      const category = await Category.findById(categoryId);
+      if (!category) {
+        return res.status(404).json({
+          message: "Category not found!",
+        });
+      }
+      // Assign category to user
+      user.category = categoryId;
     }
-
-    // Assign category to user
-    user.category = categoryId;
 
     await user.save();
 
