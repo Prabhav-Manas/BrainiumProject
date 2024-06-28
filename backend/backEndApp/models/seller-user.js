@@ -7,7 +7,7 @@ const sellerUserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, trim: true },
   password: { type: String, required: true, trim: true },
   // countryCode: { type: String, required: true, trim: true },
-  phone: { type: String, required: true, trim: true },
+  // phone: { type: String, required: true, trim: true },
   userType: {
     type: String,
     enum: ["user", "seller"],
@@ -32,6 +32,7 @@ const sellerUserSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false },
   resetPasswordToken: { type: String, trim: true },
   resetPasswordExpires: { type: Date, trim: true },
+  category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
 });
 
 sellerUserSchema.plugin(uniqueValidator);

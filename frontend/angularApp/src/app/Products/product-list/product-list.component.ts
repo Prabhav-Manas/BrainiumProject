@@ -43,8 +43,10 @@ export class ProductListComponent implements OnInit {
   fetchProducts(postsPerPage: number, currentPage: number): void {
     this._productService.getProducts(postsPerPage, currentPage).subscribe(
       (data) => {
-        this.products = data.products;
-        this.totalProducts = data.maxProducts;
+        this.products = data.products.map((product) => ({
+          ...product,
+          mainImage: this.getImageUrl(product.images[0]), // Use the first image as mainImage
+        })) as Product[];
       },
       (error) => {
         console.log('Error fetching products', error);
@@ -129,5 +131,9 @@ export class ProductListComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  getImageUrl(filename: string): string {
+    return `http://localhost:8080/api/images/${filename}`;
   }
 }

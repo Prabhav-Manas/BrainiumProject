@@ -7,4 +7,6 @@ export interface Product {
   startDate: string | Date;
   closeDate: string | Date;
   discount: number;
+  images: string[];
+  mainImage?: string | null;
 }

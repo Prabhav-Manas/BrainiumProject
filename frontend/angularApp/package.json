@@ -26,6 +26,7 @@
     "intl-tel-input": "^23.1.0",
     "jwt-decode": "^4.0.0",
     "libphonenumber-js": "^1.11.4",
+    "ng2-img-max": "^2.2.9",
     "ngx-mat-intl-tel-input": "^5.0.0",
     "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",

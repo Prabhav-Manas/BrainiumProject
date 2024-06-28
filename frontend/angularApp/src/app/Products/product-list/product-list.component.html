@@ -2,23 +2,29 @@
   <div class="row">
     <div class="col-md-6" *ngFor="let product of products">
       <div class="card mb-3">
-        <h5 class="card-header">{{ product.productName }}</h5>
-        <div class="card-body">
-          <h5 class="card-title">{{ product.category }}</h5>
-          <p class="card-text">{{ product.description }}</p>
-          <p class="card-text"><strong>Price:</strong> {{ product.price }}</p>
-          <div class="d-md-flex justify-content-around">
-            <a href="#" class="btn btn-primary">View Details</a>
-            <i
-              class="fa fa-pencil-square-o edit"
-              aria-hidden="true"
-              (click)="onEditProduct(product)"
-            ></i>
-            <i
-              class="fa fa-trash trash"
-              aria-hidden="true"
-              (click)="onDeleteProduct(product)"
-            ></i>
+        <h2 class="card-header">{{ product.productName }}</h2>
+        <div class="d-md-flex justify-content-around">
+          <div class="product-image" *ngIf="product.images.length > 0">
+            <img [src]="product.mainImage" alt="{{ product.productName }}" />
+          </div>
+
+          <div class="card-body">
+            <h5 class="card-title">{{ product.category }}</h5>
+            <p class="card-text">{{ product.description }}</p>
+            <p class="card-text"><strong>Price:</strong> {{ product.price }}</p>
+            <div class="d-md-flex justify-content-around">
+              <a href="#" class="btn btn-primary">View Details</a>
+              <i
+                class="fa fa-pencil-square-o edit"
+                aria-hidden="true"
+                (click)="onEditProduct(product)"
+              ></i>
+              <i
+                class="fa fa-trash trash"
+                aria-hidden="true"
+                (click)="onDeleteProduct(product)"
+              ></i>
+            </div>
           </div>
         </div>
       </div>

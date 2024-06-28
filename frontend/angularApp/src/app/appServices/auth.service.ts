@@ -1,4 +1,8 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -78,7 +82,7 @@ export class AuthService {
     email: string,
     password: string,
     // countryCode: string,
-    phone: string,
+    // phone: string,
     businessName: string,
     gstNumber: string
   ) {
@@ -89,13 +93,14 @@ export class AuthService {
       email: email,
       password: password,
       // countryCode: countryCode,
-      phone: phone,
+      // phone: phone,
       businessName: businessName,
       gstNumber: gstNumber,
     };
     this.showLoader();
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http
-      .post<AuthResponse>(`${this.baseUrl}/signup`, authData)
+      .post<AuthResponse>(`${this.baseUrl}/signup`, authData, { headers })
       .subscribe(
         (res) => {
           this.hideLoader();

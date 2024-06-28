@@ -1,35 +1,39 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
+// const upload = require("../middlewares/multer");
 const ProductController = require("../controllers/product");
 
-// const MIME_TYPE_MAP = {
-//   "image/png": "png",
-//   "image/jpeg": "jpg",
-//   "image/jpg": "jpg",
-// };
+const MIME_TYPE_MAP = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/jpg": "jpg",
+  "image/gif": "gif",
+  "image/svg+xml": "svg",
+  "application/octet-stream": "jpg",
+};
 
-// Set up multer for file uploads
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     const isValid = MIME_TYPE_MAP[file.mimetype];
-//     let error = new Error("invalid mime type");
-//     if (isValid) {
-//       error = null;
-//     }
-//     cb(error, "backEndApp/images");
-//   },
-//   filename: (req, file, cb) => {
-//     const name = file.originalname.toLowerCase().split(" ").join("-");
-//     const ext = MIME_TYPE_MAP[file.mimetype];
-//     cb(null, `${name}-${Date.now()}.${ext}`);
-//   },
-// });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const isValid = MIME_TYPE_MAP[file.mimetype];
+    if (!isValid) {
+      const error = new Error("Invalid MIME Type");
+      return cb(error);
+    }
+    cb(null, "backEndApp/images");
+  },
+  filename: (req, file, cb) => {
+    const name = file.originalname.toLowerCase().split(" ").join("-");
+    const ext = MIME_TYPE_MAP[file.mimetype];
+    cb(null, name + "-" + Date.now() + "." + ext);
+  },
+});
 
-// const upload = multer({ storage: storage });
-// upload.array("images"),
-
-router.post("/add-product", ProductController.addProduct);
+router.post(
+  "/add-product",
+  multer({ storage: storage }).array("images", 5),
+  ProductController.addProduct
+);
 
 router.get("/all-products", ProductController.getProducts);
 

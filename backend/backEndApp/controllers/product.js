@@ -12,23 +12,13 @@ exports.addProduct = async (req, res) => {
       discount,
     } = req.body;
 
-    // Debugging log statements
-    console.log("Files:", req.files);
-    console.log("Body:", req.body);
-
-    // if (!req.files || req.files.length === 0) {
-    //   return res.status(400).json({
-    //     message: "No files were uploaded.",
-    //   });
-    // }
-
-    // const images = req.files.map((file) => file.path);
+    const images = req.files.map((file) => file.filename);
 
     const newProduct = new Product({
       category,
       productName,
       description,
-      // images,
+      images,
       price,
       offer: {
         startDate: new Date(startDate),
@@ -39,11 +29,19 @@ exports.addProduct = async (req, res) => {
 
     await newProduct.save();
 
+    console.log("Uploaded files:", req.files);
+
     res.status(201).json({
       message: "Product added successfully",
       product: newProduct,
+      files: req.files,
     });
   } catch (error) {
+    if (error.message === "Invalid MIME Type") {
+      return res.status(400).json({
+        message: "Invalid MIME Type",
+      });
+    }
     res.status(500).json({
       message: "Error adding product",
       error: error.message,

@@ -42,7 +42,7 @@ export class SignupComponent implements OnInit {
       email: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
       // countryCode: new FormControl('', [Validators.required]),
-      phone: new FormControl('', [Validators.required]),
+      // phone: new FormControl('', [Validators.required]),
       businessName: new FormControl('', []),
       gstNumber: new FormControl('', []),
     });
@@ -87,7 +87,7 @@ export class SignupComponent implements OnInit {
       const email = this.regForm.value.email;
       const password = this.regForm.value.password;
       // const countryCode = this.regForm.value.countryCode;
-      const phone = this.regForm.value.phone;
+      // const phone = this.regForm.value.phone;
       const businessName = this.regForm.value.businessName;
       const gstNumber = this.regForm.value.gstNumber;
 
@@ -98,7 +98,7 @@ export class SignupComponent implements OnInit {
         email,
         password,
         // countryCode,
-        phone,
+        // phone,
         businessName,
         gstNumber
       );

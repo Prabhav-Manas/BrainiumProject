@@ -30,6 +30,6 @@ export class CategoryService {
   }
 
   deleteCategory(id: string) {
-    return this.http.delete(`http://localhost:8080/api/categories/${id}`);
+    return this.http.delete(`http://localhost:8080/api/category/${id}`);
   }
 }

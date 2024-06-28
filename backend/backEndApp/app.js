@@ -6,6 +6,7 @@ const app = express();
 const sellerUserRoute = require("./routes/seller-user");
 const productRoute = require("./routes/product");
 const categoryRoute = require("./routes/category");
+const multer = require("multer");
 const { ValidationError } = require("express-validation");
 
 // CORS configuration
@@ -38,18 +39,24 @@ mongoose
     console.error("Connection Failed!", error);
   });
 
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader(
-//     "Access-Control-Allow-Headers",
-//     "Origin X-Requested-With, Content-Type, Accept, Authorization"
-//   );
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "GET, PATCH, PUT, POST, DELETE, OPTIONS"
-//   );
-//   next();
-// });
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    console.log("Multer Error:", err.message);
+    return res
+      .status(400)
+      .json({ message: "File upload error", error: err.message });
+  } else if (err.message === "Invalid MIME Type") {
+    console.log("Invalid MIME Type:", err.message);
+    return res
+      .status(400)
+      .json({ message: "Invalid file type", error: err.message });
+  } else {
+    console.log("Internal Error:", err.message);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+});
 
 app.use("/api/user", sellerUserRoute);
 app.use("/api/product", productRoute);

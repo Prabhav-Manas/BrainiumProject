@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Category } from 'src/app/appModels/category.model';
+import { CategoryApiResponse } from 'src/app/appModels/categoryAPIResponse';
 import { CategoryService } from 'src/app/appServices/category.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class CategoryListComponent implements OnInit {
   categories: Category[] = [];
   categoryForm: any = FormGroup;
   editingCategory: Category | null = null;
+  categoryTypeOptions: { value: string; label: string }[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -33,8 +35,8 @@ export class CategoryListComponent implements OnInit {
 
   fetchCategories(): void {
     this._categoryService.getCategories().subscribe(
-      (data: Category[]) => {
-        this.categories = data;
+      (categories: Category[]) => {
+        this.categories = categories;
       },
       (error) => {
         console.log('Error fetching categories', error);
@@ -46,9 +48,10 @@ export class CategoryListComponent implements OnInit {
     if (this.categoryForm.valid) {
       const name = this.categoryForm.value.name;
       this._categoryService.addCategory(name).subscribe(
-        (data) => {
-          this.categories.push({ _id: data._id, name });
-          this.categoryForm.reset();
+        (response: Category) => {
+          this.categories.push({ _id: response._id, name }); // Push new category to local array
+          this.updateCategoryOptions(); // Update dropdown options after adding category
+          this.categoryForm.reset(); // Reset form after successful addition
         },
         (error) => {
           console.log('Error adding category', error);
@@ -57,43 +60,21 @@ export class CategoryListComponent implements OnInit {
     }
   }
 
+  updateCategoryOptions(): void {
+    // Update categoryTypeOptions with current categories
+    this.categoryTypeOptions = [
+      { value: 'Select', label: 'Select' },
+      ...this.categories.map((category) => ({
+        value: category._id,
+        label: category.name,
+      })),
+    ];
+  }
+
   onStartEditCategory(category: any): void {
     this.editingCategory = category;
     this.categoryForm.patchValue({ name: category.name });
   }
-
-  // onEditCategory(): void {
-  //   if (
-  //     this.categoryForm.valid &&
-  //     this.editingCategory &&
-  //     this.editingCategory._id
-  //   ) {
-  //     const name = this.categoryForm.value.name;
-  //     console.log(
-  //       'Submitting category update:',
-  //       this.editingCategory._id,
-  //       name
-  //     );
-
-  //     this._categoryService
-  //       .updateCategory(this.editingCategory._id, name)
-  //       .subscribe(
-  //         (response) => {
-  //           console.log('Category update response:', response);
-  //           if (this.editingCategory) {
-  //             this.editingCategory.name = name;
-  //           }
-  //           this.editingCategory = null;
-  //           this.categoryForm.reset();
-  //         },
-  //         (error) => {
-  //           console.log('Error updating category', error);
-  //         }
-  //       );
-  //   } else {
-  //     console.log('Form is invalid or editingCategory/_id is missing');
-  //   }
-  // }
 
   onEditCategory(): void {
     if (
@@ -102,18 +83,11 @@ export class CategoryListComponent implements OnInit {
       this.editingCategory._id
     ) {
       const name = this.categoryForm.value.name;
-      console.log(
-        'Submitting category update:',
-        this.editingCategory._id,
-        name
-      );
 
       this._categoryService
         .updateCategory(this.editingCategory._id, name)
         .subscribe(
           (updatedCategory: any) => {
-            // Ensure the parameter type here is Category
-            console.log('Category update response:', updatedCategory);
             if (this.editingCategory) {
               this.editingCategory.name = updatedCategory.name;
               this.fetchCategories();
@@ -137,6 +111,10 @@ export class CategoryListComponent implements OnInit {
     }
     this._categoryService.deleteCategory(categoryId).subscribe(
       (response) => {
+        this.categories = this.categories.filter(
+          (cat) => cat._id !== categoryId
+        ); // Optionally, update the dropdown in add-product component
+
         console.log('Category deleted:', response);
         this.fetchCategories(); // Refresh the list after deletion
       },

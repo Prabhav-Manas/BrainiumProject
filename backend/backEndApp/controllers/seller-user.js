@@ -21,7 +21,7 @@ exports.createSellerUser = async (req, res) => {
       email: req.body.email,
       password: hashPassword,
       // countryCode: req.body.countryCode,
-      phone: req.body.phone,
+      // phone: req.body.phone,
       userType: userType,
     };
 
@@ -39,6 +39,18 @@ exports.createSellerUser = async (req, res) => {
     // ---Assign the verification token to the user---
     userData.verificationToken = verificationToken;
     const user = new User(userData);
+
+    // Check if categoryId exists in the request body (adjust this based on how categoryId is provided)
+    const categoryId = req.body.categoryId; // Assuming categoryId is provided in the request body
+
+    if (!category) {
+      return res.status(404).json({
+        message: "Category Not Found!",
+      });
+    }
+
+    // Assign category to user
+    user.category = categoryId;
 
     await user.save();
 
