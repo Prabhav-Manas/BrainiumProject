@@ -12,12 +12,18 @@ import { UserDashboardComponent } from './user-dashboard/user-dashboard.componen
 import { AddProductComponent } from './Products/add-product/add-product.component';
 import { ProductListComponent } from './Products/product-list/product-list.component';
 import { CategoryListComponent } from './Category/category-list/category-list.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ProductDetailsComponent } from './Products/product-details/product-details.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'signin', pathMatch: 'full' },
   { path: 'signin', component: SigninComponent, canActivate: [LogInGuard] },
   { path: 'signup', component: SignupComponent, canActivate: [LogInGuard] },
-  { path: 'forgotPassword', component: ForgotPasswordComponent },
+  {
+    path: 'forgotPassword',
+    component: ForgotPasswordComponent,
+    canActivate: [LogInGuard],
+  },
   { path: 'reset-password/:userId/:token', component: ResetPasswordComponent },
   { path: 'verifyUser', component: VerifyUserComponent },
   {
@@ -33,8 +39,10 @@ const routes: Routes = [
     data: { role: 'user' },
   },
   { path: 'add-product', component: AddProductComponent },
+  { path: 'product-details/:id', component: ProductDetailsComponent },
   { path: 'product-list', component: ProductListComponent },
   { path: 'category-list', component: CategoryListComponent },
+  { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({

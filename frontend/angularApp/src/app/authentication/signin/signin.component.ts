@@ -60,15 +60,15 @@ export class SigninComponent implements OnInit, OnDestroy {
         password: this.logInForm.value.password,
       };
 
-      this._authService.signin(authData).subscribe(
-        (res) => {
+      this._authService.postRequest(authData, 'signin', true).subscribe(
+        (res: any) => {
           this._authService.hideLoader();
           if (res.status === 200) {
             this._authService.showSuccess(res.message);
             this._authService.handleAuthentication(res);
             if (this._authService.getUserRole() === 'seller') {
               this.router.navigate(['/seller-dashboard']);
-            } else {
+            } else if (this._authService.getUserRole() === 'user') {
               this.router.navigate(['/user-dashboard']);
             }
           } else {

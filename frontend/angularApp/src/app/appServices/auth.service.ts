@@ -11,6 +11,7 @@ import { AuthData } from 'src/app/appModels/auth-data.model';
 import { AuthResponse } from '../appModels/auth-response.model';
 import { LoaderService } from './loader.service';
 import { jwtDecode } from 'jwt-decode';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,7 @@ export class AuthService {
   private loading: boolean = false;
   private userRole: string = '';
 
-  private baseUrl = 'http://localhost:8080/api/user';
+  private baseUrl = environment.baseUrl;
 
   constructor(
     private http: HttpClient,
@@ -75,24 +76,12 @@ export class AuthService {
     return null;
   }
 
-  // ----SignUp----
-  signUp(bodyData: AuthData, url: string = 'signup', loader: boolean = true) {
+  postRequest(bodyData: any, url: string, loader: boolean) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     if (loader) {
       this.showLoader();
     }
-    return this.http.post<AuthResponse>(`${this.baseUrl}/${url}`, bodyData, {
-      headers,
-    });
-  }
-
-  // ----SignIn----
-  signin(bodyData: AuthData, url: string = 'signin', loader: boolean = true) {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    if (loader) {
-      this.showLoader();
-    }
-    return this.http.post<AuthResponse>(`${this.baseUrl}/${url}`, bodyData, {
+    return this.http.post(`${this.baseUrl}/${url}`, bodyData, {
       headers,
     });
   }
@@ -105,23 +94,6 @@ export class AuthService {
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
     this.router.navigate(['/']);
-  }
-
-  // ----ForgotPassword----
-  forgotPassword(email: string) {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/forgot-password`, {
-      email,
-    });
-  }
-
-  // ----ResetPassword----
-  resetPassword(data: {
-    userId: string;
-    token: string;
-    newPassword: string;
-    confirmNewPassword: string;
-  }) {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/reset-password`, data);
   }
 
   // ----Handle Authentication----
@@ -154,13 +126,20 @@ export class AuthService {
   // ----Auto Authentication----
   public autoAuthData() {
     const authInformation = this.getAuthData();
+    console.log('Auth Information:', authInformation);
+
     if (!authInformation) {
-      this.router.navigate(['/signin']);
+      console.log('No auth information found, redirecting to signin.');
+      // this.router.navigate(['/signin']);
       return; // Handle the case when authInformation is undefined
     }
 
     const now = new Date();
     const expiresIn = authInformation.expirationDate.getTime() - now.getTime();
+
+    console.log('Current time:', now);
+    console.log('Expiration time:', authInformation.expirationDate);
+    console.log('Expires in (ms):', expiresIn);
 
     if (expiresIn > 0) {
       this.token = authInformation.token;
@@ -169,12 +148,15 @@ export class AuthService {
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusListener.next(true);
 
+      console.log('User is authenticated, role:', this.userRole);
+
       if (this.userRole === 'seller') {
         this.router.navigate(['/seller-dashboard']);
       } else if (this.userRole === 'user') {
         this.router.navigate(['/user-dashboard']);
       }
     } else {
+      console.log('Token expired, redirecting to signin.');
       this.router.navigate(['/signin']);
     }
   }
@@ -197,6 +179,7 @@ export class AuthService {
   private clearAuthData() {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
+    localStorage.removeItem('userRole');
   }
 
   // ----Fetch Authentication Data----
@@ -204,6 +187,10 @@ export class AuthService {
     const token = localStorage.getItem('token');
     const expirationDate = localStorage.getItem('expiration');
     const userRole = localStorage.getItem('userRole');
+
+    console.log('Token:', token);
+    console.log('Expiration Date:', expirationDate);
+    console.log('User Role:', userRole);
 
     if (!token || !expirationDate || !userRole) {
       return null;

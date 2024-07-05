@@ -13,17 +13,19 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-      <a class="navbar-brand">Dashboard</a>
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link pointer">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link pointer">About</a>
-        </li>
-        <li class="nav-item floatItem">
+      <a class="navbar-brand position-relative">Dashboard</a>
+      <ul class="d-md-flex navbar-nav m-auto mb-2 mb-lg-0">
+        <div class="d-md-flex">
+          <li class="nav-item">
+            <a class="nav-link pointer">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link pointer">About</a>
+          </li>
+        </div>
+        <div class="position-absolute logoutButton">
           <a class="nav-link pointer" (click)="onLogOut()">Logout</a>
-        </li>
+        </div>
       </ul>
     </div>
   </div>
@@ -31,16 +33,26 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-6" *ngFor="let product of products">
-      <div class="card mb-3">
-        <h5 class="card-header">{{ product.productName }}</h5>
+    <div class="col-md-3 my-3" *ngFor="let product of products">
+      <div class="card shadow" style="width: 18rem">
+        <img src="..." class="card-img-top" alt="..." />
         <div class="card-body">
-          <h5 class="card-title">{{ product.category }}</h5>
+          <h2 class="card-title text-success">{{ product.productName }}</h2>
+          <p class="card-text">
+            <strong class="text-success">Category: </strong>
+            {{ product.category }}
+          </p>
           <p class="card-text">{{ product.description }}</p>
-          <p class="card-text"><strong>Price:</strong> {{ product.price }}</p>
-          <div class="d-md-flex justify-content-around">
-            <a href="#" class="btn btn-primary">View Details</a>
-          </div>
+          <p class="text-success">
+            <strong class="text-danger">Price: </strong>{{ product.price }}
+          </p>
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            [routerLink]="['/product-details', product._id]"
+          >
+            View Details
+          </button>
         </div>
       </div>
     </div>

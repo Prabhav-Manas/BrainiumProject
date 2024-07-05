@@ -22,7 +22,7 @@ const registerValidation = {
     categoryId: Joi.string().when("userType", {
       is: "seller",
       then: Joi.string().required(),
-      otherwise: Joi.string().optional().allow(""),
+      otherwise: Joi.string().allow("").optional(),
     }),
   }),
 };

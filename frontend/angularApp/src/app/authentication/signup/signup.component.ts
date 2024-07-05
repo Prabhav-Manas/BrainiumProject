@@ -17,6 +17,8 @@ import { Category } from 'src/app/appModels/category.model';
 import { CategoryService } from 'src/app/appServices/category.service';
 import { AuthData } from 'src/app/appModels/auth-data.model';
 import { Router } from '@angular/router';
+import { AuthResponse } from 'src/app/appModels/auth-response.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-signup',
@@ -98,39 +100,33 @@ export class SignupComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.regForm.valid) {
-      const authData: AuthData = {
-        userType: this.regForm.value.userType,
-        firstName: this.regForm.value.firstName,
-        lastName: this.regForm.value.lastName,
-        email: this.regForm.value.email,
-        password: this.regForm.value.password,
-        phone: this.regForm.value.phone,
-        businessName: this.regForm.value.businessName,
-        gstNumber: this.regForm.value.gstNumber,
-        categoryId: this.regForm.value.categoryId,
-      };
+    const authData: AuthData = {
+      userType: this.regForm.value.userType,
+      firstName: this.regForm.value.firstName,
+      lastName: this.regForm.value.lastName,
+      email: this.regForm.value.email,
+      password: this.regForm.value.password,
+      phone: this.regForm.value.phone,
+      businessName: this.regForm.value.businessName,
+      gstNumber: this.regForm.value.gstNumber,
+      categoryId: this.regForm.value.categoryId,
+    };
 
-      this._authService.signUp(authData).subscribe(
-        (res) => {
-          this._authService.hideLoader();
-          if (res.status === 201) {
-            this._authService.showSuccess(res.message);
-          }
-          this.router.navigate(['/']);
-        },
-        (error) => {
-          this._authService.hideLoader();
-          this._authService.handleError(error);
+    this._authService.postRequest(authData, 'signup', true).subscribe(
+      (res: any) => {
+        this._authService.hideLoader();
+        alert('Sign up successful.');
+        console.log(res);
+        if (res.status === 201) {
+          this._authService.showSuccess(res.message);
         }
-      );
-      console.log(this.regForm.value);
-    } else {
-      this.toastr.error('Please fill ou the form correctly.', 'Error', {
-        toastClass: 'ngx-toastr custom-toast-error',
-        positionClass: 'toast-top-right',
-      });
-    }
-    this.regForm.reset();
+        this.router.navigate(['/']);
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+        this._authService.hideLoader();
+        this._authService.handleError(error);
+      }
+    );
   }
 }

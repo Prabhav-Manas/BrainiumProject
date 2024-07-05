@@ -6,7 +6,9 @@ const app = express();
 const sellerUserRoute = require("./routes/seller-user");
 const productRoute = require("./routes/product");
 const categoryRoute = require("./routes/category");
+const cartRoute = require("./routes/cart");
 const multer = require("multer");
+const path = require("path");
 const { ValidationError } = require("express-validation");
 
 // CORS configuration
@@ -26,6 +28,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(express.static(path.join(__dirname, "images")));
 
 const mongoDBURL =
   "mongodb+srv://Manas:AGjhA1TmVr8q51mG@brainiumcluster.iuqydsw.mongodb.net/brainiumInternProject?retryWrites=true&w=majority&appName=BrainiumCluster";
@@ -39,6 +42,7 @@ mongoose
     console.error("Connection Failed!", error);
   });
 
+// ---For Image Upload---
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     console.log("Multer Error:", err.message);
@@ -61,12 +65,11 @@ app.use((err, req, res, next) => {
 app.use("/api/user", sellerUserRoute);
 app.use("/api/product", productRoute);
 app.use("/api/category", categoryRoute);
+app.use("/api/cart", cartRoute);
 
 // ---Error Handling Middleware in Express-Validation---
 app.use(function (err, req, res, next) {
   if (err instanceof ValidationError) {
-    console.log("Validation Error:=>", err);
-
     const errorMessages = err.details.body
       .map((error) => error.message)
       .join(", ");
@@ -75,11 +78,19 @@ app.use(function (err, req, res, next) {
       errors: errorMessages,
     });
   }
+
   console.log("Internal Error:=>", err);
 
   return res.status(500).json({
     message: "Internal Server Error",
     error: err.message,
+  });
+});
+
+// ---Handle Invalid URLs---
+app.use("/api/*", (req, res) => {
+  res.status(404).json({
+    message: "Bad Request. Invalid URL",
   });
 });
 

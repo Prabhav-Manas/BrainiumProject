@@ -57,6 +57,10 @@ export class ProductService {
       );
   }
 
+  getProductById(productId: any) {
+    return this.http.get(`http://localhost:8080/api/product/${productId}`);
+  }
+
   updateProduct(product: Product) {
     console.log('Update Product Service - Product ID:', product._id);
     return this.http.put(

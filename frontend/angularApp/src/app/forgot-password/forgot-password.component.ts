@@ -34,16 +34,20 @@ export class ForgotPasswordComponent implements OnInit {
     if (this.forgotPasswordForm.valid) {
       const email = this.forgotPasswordForm.value.email;
 
-      this._authService.forgotPassword(email).subscribe(
-        (response) => {
-          if (response.status === 200) {
-            this._authService.showSuccess(response.message);
+      this._authService
+        .postRequest({ email }, 'forgot-password', true)
+        .subscribe(
+          (response: any) => {
+            this._authService.hideLoader();
+            if (response.status === 200) {
+              this._authService.showSuccess(response.message);
+            }
+          },
+          (error: HttpErrorResponse) => {
+            this._authService.hideLoader();
+            this._authService.handleError(error);
           }
-        },
-        (error: HttpErrorResponse) => {
-          this._authService.handleError(error);
-        }
-      );
+        );
     }
     this.forgotPasswordForm.reset();
   }

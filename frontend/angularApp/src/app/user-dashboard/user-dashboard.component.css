@@ -4,3 +4,10 @@
 .pointer {
   cursor: pointer;
 }
+.logoutButton {
+  right: 5px;
+}
+.card,
+button {
+  border-radius: 0;
+}

@@ -224,6 +224,7 @@ exports.forgotPassword = async (req, res) => {
       res.status(200).json({
         status: 200,
         message: "Password reset email sent",
+        token: resetToken,
       });
     } catch (saveError) {
       if (saveError.name === "ValidationError") {
@@ -290,6 +291,7 @@ exports.resetPassword = async (req, res) => {
     //   path.join(__dirname, "../../public/email-template", "reset-password.html")
     // );
   } catch (error) {
+    console.error("Error resetting password:", error);
     res.status(500).json({
       status: 500,
       message: error.message,

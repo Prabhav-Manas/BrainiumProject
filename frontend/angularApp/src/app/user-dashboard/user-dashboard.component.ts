@@ -23,6 +23,7 @@ export class UserDashboardComponent implements OnInit {
     this._productService.getAllProducts().subscribe(
       (data) => {
         this.products = data.products;
+        console.log(data);
       },
       (error) => {
         console.log('Error fetching products', error);

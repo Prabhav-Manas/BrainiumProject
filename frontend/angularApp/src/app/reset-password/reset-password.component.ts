@@ -19,6 +19,8 @@ export class ResetPasswordComponent implements OnInit {
   token: string = '';
   userId: string = '';
   errorMessage: string = '';
+  hide = 'password';
+  cnfhide = 'password';
 
   constructor(
     private _authService: AuthService,
@@ -54,20 +56,31 @@ export class ResetPasswordComponent implements OnInit {
       const confirmNewPassword =
         this.resetPasswordForm.value.confirmNewPassword;
 
+      console.log('UserId:', this.userId);
+      console.log('Token:', this.token);
+      console.log('New Password:', newPassword);
+      console.log('Confirm New Password:', confirmNewPassword);
+
       this._authService
-        .resetPassword({
-          userId: this.userId,
-          token: this.token,
-          newPassword,
-          confirmNewPassword,
-        })
+        .postRequest(
+          {
+            userId: this.userId,
+            token: this.token,
+            newPassword,
+            confirmNewPassword,
+          },
+          'reset-password',
+          true
+        )
         .subscribe(
-          (res) => {
+          (res: any) => {
+            this._authService.hideLoader();
             if (res.status === 200) {
               this._authService.showSuccess(res.message);
             }
           },
           (error: HttpErrorResponse) => {
+            this._authService.hideLoader();
             this._authService.handleError(error);
           }
         );

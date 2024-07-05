@@ -30,6 +30,8 @@ import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
 import { AddProductComponent } from './Products/add-product/add-product.component';
 import { ProductListComponent } from './Products/product-list/product-list.component';
 import { CategoryListComponent } from './Category/category-list/category-list.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ProductDetailsComponent } from './Products/product-details/product-details.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,8 @@ import { CategoryListComponent } from './Category/category-list/category-list.co
     AddProductComponent,
     ProductListComponent,
     CategoryListComponent,
+    PageNotFoundComponent,
+    ProductDetailsComponent,
   ],
   imports: [
     BrowserModule,
