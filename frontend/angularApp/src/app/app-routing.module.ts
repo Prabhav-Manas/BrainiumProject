@@ -14,6 +14,7 @@ import { ProductListComponent } from './Products/product-list/product-list.compo
 import { CategoryListComponent } from './Category/category-list/category-list.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ProductDetailsComponent } from './Products/product-details/product-details.component';
+import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'signin', pathMatch: 'full' },
@@ -42,6 +43,7 @@ const routes: Routes = [
   { path: 'product-details/:id', component: ProductDetailsComponent },
   { path: 'product-list', component: ProductListComponent },
   { path: 'category-list', component: CategoryListComponent },
+  { path: 'shopping-cart', component: ShoppingCartComponent },
   { path: '**', component: PageNotFoundComponent },
 ];
 

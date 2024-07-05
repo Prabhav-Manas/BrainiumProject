@@ -2,3 +2,10 @@
 3572EF
 3ABEF9
 A7E6FF */
+.col-md-3 {
+  padding: 0;
+}
+.col-md-9 {
+  padding: 0;
+  margin: auto;
+}

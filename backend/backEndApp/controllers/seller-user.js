@@ -180,6 +180,8 @@ exports.logInSellerUser = async (req, res) => {
           message: "Login Successful",
           token: token,
           expiresIn: 3600,
+          // userId: user._id,
+          // userType: user.userType,
           loaderStatus: "complete", // Indicate loading is complete
         });
       }

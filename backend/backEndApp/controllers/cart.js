@@ -43,3 +43,28 @@ exports.addToCart = async (req, res) => {
     });
   }
 };
+
+exports.getAllCartItems = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const cartItems = await CartItem.find({ userId }).populate("productId");
+
+    if (cartItems.length === 0) {
+      return res.status(404).json({
+        message: "No items added in cart",
+      });
+    } else {
+      res.status(200).json({
+        message: "Cart Items fetched successfully!",
+        cartItems: cartItems,
+      });
+    }
+  } catch (error) {
+    console.log("Error in fetching cart Items:=>", error);
+    res.status(500).json({
+      message: "Fetching cart items failed!",
+      error: error.message,
+    });
+  }
+};

@@ -23,6 +23,7 @@ export class AuthService {
   private tokenTimer: any;
   private loading: boolean = false;
   private userRole: string = '';
+  private firstName: string = '';
 
   private baseUrl = environment.baseUrl;
 
@@ -103,13 +104,19 @@ export class AuthService {
       const decodedToken: any = jwtDecode(this.token);
       console.log('jwtDecode:=>', decodedToken);
       this.userRole = decodedToken.user.role;
+      this.firstName = decodedToken.user.firstName;
       const expiresInDuration = res.expiresIn ?? 3600; // Default to 1 hr if undefined
       this.setAuthTimer(expiresInDuration);
       this.isAuthenticated = true;
       this.authStatusListener.next(true);
       const now = new Date();
       const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
-      this.saveAuthData(this.token, expirationDate, this.userRole);
+      this.saveAuthData(
+        this.token,
+        expirationDate,
+        this.userRole,
+        this.firstName
+      );
       this.showSuccess(res.message);
     }
   }
@@ -150,11 +157,11 @@ export class AuthService {
 
       console.log('User is authenticated, role:', this.userRole);
 
-      if (this.userRole === 'seller') {
-        this.router.navigate(['/seller-dashboard']);
-      } else if (this.userRole === 'user') {
-        this.router.navigate(['/user-dashboard']);
-      }
+      // if (this.userRole === 'seller') {
+      //   this.router.navigate(['/seller-dashboard']);
+      // } else if (this.userRole === 'user') {
+      //   this.router.navigate(['/user-dashboard']);
+      // }
     } else {
       console.log('Token expired, redirecting to signin.');
       this.router.navigate(['/signin']);
@@ -169,10 +176,16 @@ export class AuthService {
   }
 
   // ----Save Authentication Data----
-  public saveAuthData(token: string, expirationDate: Date, userRole: string) {
+  public saveAuthData(
+    token: string,
+    expirationDate: Date,
+    userRole: string,
+    firstName: string
+  ) {
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
     localStorage.setItem('userRole', userRole);
+    localStorage.setItem('firstName', firstName);
   }
 
   // ----Clear Authentication Data----
@@ -180,6 +193,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('firstName');
   }
 
   // ----Fetch Authentication Data----
@@ -187,18 +201,20 @@ export class AuthService {
     const token = localStorage.getItem('token');
     const expirationDate = localStorage.getItem('expiration');
     const userRole = localStorage.getItem('userRole');
+    const firstName = localStorage.getItem('firstName');
 
     console.log('Token:', token);
     console.log('Expiration Date:', expirationDate);
     console.log('User Role:', userRole);
 
-    if (!token || !expirationDate || !userRole) {
+    if (!token || !expirationDate || !userRole || !firstName) {
       return null;
     } else {
       return {
         token: token,
         expirationDate: new Date(expirationDate),
         userRole: userRole,
+        firstName: firstName,
       };
     }
   }
@@ -206,5 +222,10 @@ export class AuthService {
   // ----Fetch User Role----
   public getUserRole() {
     return this.userRole;
+  }
+
+  // Add a method to get the first name
+  public getFirstName() {
+    return this.firstName;
   }
 }
