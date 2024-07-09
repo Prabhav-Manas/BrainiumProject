@@ -79,4 +79,9 @@ export class ProductService {
       'http://localhost:8080/api/product/all-products'
     );
   }
+
+  updateCartItem(cartItemId: string, quantity: number): Observable<any> {
+    const body = { cartItemId, quantity };
+    return this.http.put('http://localhost:8080/api/cart/updateItem', body);
+  }
 }

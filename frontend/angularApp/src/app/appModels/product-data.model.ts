@@ -9,4 +9,5 @@ export interface Product {
   discount: number;
   images: string[];
   mainImage?: string | null;
+  quantity?: number;
 }

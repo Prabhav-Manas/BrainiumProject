@@ -3,6 +3,7 @@ const app = require("./backEndApp/app");
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+require("dotenv").config();
 
 const port = process.env.PORT || 8080;
 app.set("port", port);

@@ -33,6 +33,7 @@ import { CategoryListComponent } from './Category/category-list/category-list.co
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ProductDetailsComponent } from './Products/product-details/product-details.component';
 import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
+import { CheckoutComponent } from './checkout/checkout.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
     PageNotFoundComponent,
     ProductDetailsComponent,
     ShoppingCartComponent,
+    CheckoutComponent,
   ],
   imports: [
     BrowserModule,

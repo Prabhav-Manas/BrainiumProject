@@ -10,6 +10,8 @@ const cartRoute = require("./routes/cart");
 const multer = require("multer");
 const path = require("path");
 const { ValidationError } = require("express-validation");
+const checkoutRoutes = require("./routes/checkout");
+require("dotenv").config();
 
 // CORS configuration
 const corsOptions = {
@@ -29,6 +31,13 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(express.static(path.join(__dirname, "images")));
+
+// Use raw body parser for Stripe webhook
+// app.use(
+//   "/api/checkout",
+//   bodyParser.raw({ type: "application/json" }),
+//   checkoutRoutes.handleWebhook
+// );
 
 const mongoDBURL =
   "mongodb+srv://Manas:AGjhA1TmVr8q51mG@brainiumcluster.iuqydsw.mongodb.net/brainiumInternProject?retryWrites=true&w=majority&appName=BrainiumCluster";
@@ -66,6 +75,9 @@ app.use("/api/user", sellerUserRoute);
 app.use("/api/product", productRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/cart", cartRoute);
+
+// Routes
+app.use("/api/checkout", checkoutRoutes);
 
 // ---Error Handling Middleware in Express-Validation---
 app.use(function (err, req, res, next) {

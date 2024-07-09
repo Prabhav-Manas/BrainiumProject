@@ -14,22 +14,38 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td colspan="2">Larry the Bird</td>
-              <td>@twitter</td>
+            <tr *ngFor="let item of cartItems">
+              <td>
+                <img
+                  [src]="item.product.images?.[0]"
+                  alt="{{ item.product.productName }}"
+                  width="100px"
+                />
+              </td>
+              <td>{{ item.product.productName }}</td>
+              <td>
+                <input
+                  type="number"
+                  [(ngModel)]="item.quantity"
+                  (input)="updateCartItem(item)"
+                  min="1"
+                />
+              </td>
+              <td>{{ item.product.price }}</td>
+              <td>
+                {{
+                  item.quantity && item.product.price
+                    ? item.quantity * item.product.price
+                    : 0
+                }}
+              </td>
+              <td>
+                <i
+                  class="fa fa-trash text-danger"
+                  aria-hidden="true"
+                  (click)="onRemoveCartItem(item._id)"
+                ></i>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -48,24 +64,34 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
+              <tr *ngFor="let item of cartItems">
+                <th>{{ item.product.productName }}</th>
+                <td>{{ item.product.price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>
+                  {{
+                    item.quantity && item.product.price
+                      ? item.quantity * item.product.price
+                      : 0
+                  }}
+                </td>
               </tr>
+
               <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <td class="fw-bold text-success">Sub Total:</td>
-                <td class="">200</td>
+                <td class="fw-bold text-success" colspan="3">Sub Total:</td>
+                <td class="">
+                  <strong class="text-danger">{{ calculateSubTotal() }}</strong>
+                </td>
               </tr>
             </tbody>
           </table>
+          <div class="couponInput">
+            <input type="text" value="" placeholder="Apply Coupon" />
+          </div>
+          <br /><br />
+          <div class="">
+            <button type="button">Proceed to Checkout</button>
+          </div>
         </div>
       </div>
     </div>

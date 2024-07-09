@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/appServices/auth.service';
 import { navBarData } from './nav-data';
+import { CartService } from '../appServices/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -17,7 +18,12 @@ export class HeaderComponent implements OnInit {
   isSeller: boolean = false;
   firstName: string = '';
 
-  constructor(private _authService: AuthService) {}
+  cartItemCount: number = 0;
+
+  constructor(
+    private _authService: AuthService,
+    private _cartService: CartService
+  ) {}
 
   ngOnInit(): void {
     this._authService.getAuthStatusListener().subscribe((isAuthenticated) => {
@@ -34,6 +40,10 @@ export class HeaderComponent implements OnInit {
     if (this.isLoggedIn) {
       this.firstName = this._authService.getFirstName();
     }
+
+    this._cartService.getCartItemCount().subscribe((count) => {
+      this.cartItemCount = count;
+    });
   }
 
   // isSeller(): boolean {

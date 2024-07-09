@@ -1,8 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
+const truncateDescription = require("../middlewares/truncateDescription");
 // const upload = require("../middlewares/multer");
 const ProductController = require("../controllers/product");
+
+// const truncateDescription = (req, res, next) => {
+//   if (req.body.description && req.body.description.length > 300) {
+//     req.body.description = req.body.description.substring(0, 300) + "...";
+//   }
+//   next();
+// };
 
 const MIME_TYPE_MAP = {
   "image/png": "png",
@@ -32,14 +40,15 @@ const storage = multer.diskStorage({
 router.post(
   "/add-product",
   multer({ storage: storage }).array("images", 5),
+  truncateDescription,
   ProductController.addProduct
 );
 
-router.get("/all-products", ProductController.getProducts);
+router.get("/all-products", truncateDescription, ProductController.getProducts);
 
-router.get("/:id", ProductController.getSingleProduct);
+router.get("/:id", truncateDescription, ProductController.getSingleProduct);
 
-router.put("/:id", ProductController.updateProduct);
+router.put("/:id", truncateDescription, ProductController.updateProduct);
 
 router.delete("/:id", ProductController.deleteProduct);
 

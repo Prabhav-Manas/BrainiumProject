@@ -11,3 +11,7 @@
 button {
   border-radius: 0;
 }
+.description {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}

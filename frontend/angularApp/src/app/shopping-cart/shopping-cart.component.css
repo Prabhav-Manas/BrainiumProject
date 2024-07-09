@@ -2,3 +2,6 @@
   background-color: rgb(199, 224, 224);
   height: 90vh;
 }
+.couponInput {
+  float: right;
+}

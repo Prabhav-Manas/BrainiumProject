@@ -61,5 +61,16 @@ F1DEC9 */
   right: 12px;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.description {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
