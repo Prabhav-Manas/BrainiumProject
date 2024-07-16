@@ -12,6 +12,8 @@ import { ProductService } from 'src/app/appServices/product.service';
 export class ProductDetailsComponent implements OnInit {
   product!: Product;
   quantity: number = 1;
+  itemAlreadyInCart: boolean = false;
+  cartItemId = '';
 
   constructor(
     private _productService: ProductService,
@@ -25,7 +27,9 @@ export class ProductDetailsComponent implements OnInit {
 
     if (productId) {
       this.fetchProductDetails(productId);
+      this.checkIfItemInCart(productId);
     }
+    console.log('Product ID:=>', productId);
   }
 
   fetchProductDetails(id: string) {
@@ -44,16 +48,43 @@ export class ProductDetailsComponent implements OnInit {
     this._cartService.addToCart(this.product._id, this.quantity).subscribe(
       (res) => {
         if (res) {
-          alert('Product already exist in your cart.');
-        } else {
           alert('Item added in cart');
           this.router.navigate(['/shopping-cart']);
           console.log(res);
+        } else {
+          alert('Product already exist in your cart.');
+          this.itemAlreadyInCart = true;
         }
       },
       (error) => {
         console.log(error);
       }
     );
+  }
+
+  onRemoveFromCart() {
+    this._cartService.removeCartItem(this.cartItemId).subscribe(
+      (removeItem) => {
+        console.log('Item removed!');
+        this.itemAlreadyInCart = false;
+      },
+      (error) => {
+        console.log('Error in removing cart item');
+      }
+    );
+  }
+
+  checkIfItemInCart(productId: string) {
+    this._cartService.getAllCartItems().subscribe((cartData) => {
+      console.log('CartItems', cartData.cartItems);
+      const cartItem = cartData.cartItems.find(
+        (item: any) => item.product._id === productId
+      );
+
+      if (cartItem) {
+        this.itemAlreadyInCart = true;
+        this.cartItemId = cartItem._id;
+      }
+    });
   }
 }

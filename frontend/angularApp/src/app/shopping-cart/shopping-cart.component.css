@@ -1,7 +1,50 @@
 .bgCartSubTotalColor {
-  background-color: rgb(199, 224, 224);
+  background-color: #9f70fd;
   height: 90vh;
 }
 .couponInput {
   float: right;
+}
+.removeSubBillPadding {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ---Remove Arrow From input type number--- */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: none;
+}
+/* ---Remove Arrow From input type number--- */
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-control button {
+  width: 30px;
+  height: 30px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-control input {
+  width: 60px;
+  text-align: center;
+  border: 1px solid #ddd;
+  margin: 0 5px;
 }

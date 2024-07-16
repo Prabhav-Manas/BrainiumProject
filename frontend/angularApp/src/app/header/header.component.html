@@ -65,7 +65,7 @@
     <!-- Include your top navbar HTML here -->
 
     <!-- Navbar for Non-Sellers -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top bgUserColor">
       <div class="container-fluid">
         <button
           class="navbar-toggler"
@@ -82,33 +82,35 @@
           class="collapse navbar-collapse d-md-flex"
           id="navbarTogglerDemo01"
         >
-          <a class="navbar-brand position-relative">Dashboard</a>
+          <a class="navbar-brand position-relative text-white">Dashboard</a>
           <ul class="d-md-flex navbar-nav m-auto mb-2 mb-lg-0">
             <div class="d-md-flex">
               <li class="nav-item">
-                <a class="nav-link pointer">Home</a>
+                <a class="nav-link pointer text-white">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link pointer">About</a>
+                <a class="nav-link pointer text-white">About</a>
               </li>
             </div>
-
-            <!-- <div *ngIf="isLoggedIn" class="ms-auto">
-              <span class="navbar-text me-3">Welcome, {{ firstName }}</span>
-            </div> -->
 
             <div class="row">
               <div class="d-md-flex">
                 <div class="dropdown position-absolute menuButton mt-2">
-                  <a routerLink="/shopping-cart"
-                    ><i class="fa fa-shopping-cart" aria-hidden="true"></i
-                  ></a>
-                  <span class="badge badge-pill badge-danger bg-secondary">{{
-                    cartItemCount
-                  }}</span>
+                  <a routerLink="/shopping-cart" class="position-relative">
+                    <i
+                      class="fa fa-shopping-cart text-white"
+                      aria-hidden="true"
+                    ></i>
+                    <span
+                      class="position-absolute top-0 translate-middle badge rounded-pill bg-success"
+                    >
+                      {{ cartItemCount }}
+                      <span class="visually-hidden">items in cart</span>
+                    </span>
+                  </a>
                   &nbsp;&nbsp;&nbsp;&nbsp;
                   <a
-                    class="dropdown-toggle"
+                    class="dropdown-toggle text-white"
                     type=""
                     id="dropdownMenuButton1"
                     data-bs-toggle="dropdown"

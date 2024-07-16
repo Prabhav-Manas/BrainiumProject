@@ -88,6 +88,9 @@ li {
 /* SideBar */
 
 /* Top-navbar */
+.bgUserColor {
+  background-color: #7f27ff;
+}
 .floatItem {
   float: right;
 }

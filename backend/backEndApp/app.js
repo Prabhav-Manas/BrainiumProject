@@ -1,19 +1,24 @@
+const mongoose = require("mongoose");
 const express = require("express");
 const bodyParser = require("body-parser");
+
 const cors = require("cors");
-const mongoose = require("mongoose");
 const app = express();
+
 const sellerUserRoute = require("./routes/seller-user");
 const productRoute = require("./routes/product");
 const categoryRoute = require("./routes/category");
 const cartRoute = require("./routes/cart");
+const checkoutRoute = require("./routes/checkout");
+
 const multer = require("multer");
 const path = require("path");
+
 const { ValidationError } = require("express-validation");
-const checkoutRoutes = require("./routes/checkout");
+
 require("dotenv").config();
 
-// CORS configuration
+// ---CORS configuration---
 const corsOptions = {
   origin: "http://localhost:4200", // Your frontend origin
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
@@ -32,15 +37,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(express.static(path.join(__dirname, "images")));
 
-// Use raw body parser for Stripe webhook
-// app.use(
-//   "/api/checkout",
-//   bodyParser.raw({ type: "application/json" }),
-//   checkoutRoutes.handleWebhook
-// );
-
-const mongoDBURL =
-  "mongodb+srv://Manas:AGjhA1TmVr8q51mG@brainiumcluster.iuqydsw.mongodb.net/brainiumInternProject?retryWrites=true&w=majority&appName=BrainiumCluster";
+const mongoDBURL = process.env.MONGODB_URL;
 
 mongoose
   .connect(mongoDBURL)
@@ -76,8 +73,8 @@ app.use("/api/product", productRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/cart", cartRoute);
 
-// Routes
-app.use("/api/checkout", checkoutRoutes);
+// ---Payment-Gateway---
+app.use("/api/payment-intent", checkoutRoute);
 
 // ---Error Handling Middleware in Express-Validation---
 app.use(function (err, req, res, next) {

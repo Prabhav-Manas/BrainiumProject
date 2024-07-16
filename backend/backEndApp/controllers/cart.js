@@ -83,11 +83,11 @@ exports.updateCartItem = async (req, res) => {
   try {
     const { cartItemId, quantity } = req.body;
 
-    if (!quantity || quantity <= 0) {
-      res.status(400).json({
-        message: "Quantity must be greater than 0",
-      });
-    }
+    // if (!quantity || quantity <= 0) {
+    //   res.status(400).json({
+    //     message: "Quantity must be greater than 0",
+    //   });
+    // }
 
     const updatedCartItem = await CartItem.findByIdAndUpdate(
       cartItemId,

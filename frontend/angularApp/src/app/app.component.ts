@@ -16,6 +16,8 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this._authService.autoAuthData();
 
-    this._cartService.getAllCartItems().subscribe();
+    if (this._authService.getIsAuth()) {
+      this._cartService.getAllCartItems().subscribe();
+    }
   }
 }

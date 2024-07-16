@@ -7,11 +7,11 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-import { AuthData } from 'src/app/appModels/auth-data.model';
 import { AuthResponse } from '../appModels/auth-response.model';
 import { LoaderService } from './loader.service';
 import { jwtDecode } from 'jwt-decode';
 import { environment } from 'src/environments/environment';
+import { CartService } from './cart.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,6 @@ export class AuthService {
   private token: string = '';
   private authStatusListener = new Subject<boolean>();
   private tokenTimer: any;
-  private loading: boolean = false;
   private userRole: string = '';
   private firstName: string = '';
 
@@ -29,6 +28,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
+    private _cartService: CartService,
     private router: Router,
     private toastr: ToastrService,
     private _loaderService: LoaderService
@@ -94,6 +94,7 @@ export class AuthService {
     this.authStatusListener.next(false);
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
+    this._cartService.clearCart();
     this.router.navigate(['/']);
   }
 
@@ -136,17 +137,11 @@ export class AuthService {
     console.log('Auth Information:', authInformation);
 
     if (!authInformation) {
-      console.log('No auth information found, redirecting to signin.');
-      // this.router.navigate(['/signin']);
       return; // Handle the case when authInformation is undefined
     }
 
     const now = new Date();
     const expiresIn = authInformation.expirationDate.getTime() - now.getTime();
-
-    console.log('Current time:', now);
-    console.log('Expiration time:', authInformation.expirationDate);
-    console.log('Expires in (ms):', expiresIn);
 
     if (expiresIn > 0) {
       this.token = authInformation.token;
@@ -154,16 +149,7 @@ export class AuthService {
       this.isAuthenticated = true;
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusListener.next(true);
-
-      console.log('User is authenticated, role:', this.userRole);
-
-      // if (this.userRole === 'seller') {
-      //   this.router.navigate(['/seller-dashboard']);
-      // } else if (this.userRole === 'user') {
-      //   this.router.navigate(['/user-dashboard']);
-      // }
     } else {
-      console.log('Token expired, redirecting to signin.');
       this.router.navigate(['/signin']);
     }
   }
@@ -202,10 +188,6 @@ export class AuthService {
     const expirationDate = localStorage.getItem('expiration');
     const userRole = localStorage.getItem('userRole');
     const firstName = localStorage.getItem('firstName');
-
-    console.log('Token:', token);
-    console.log('Expiration Date:', expirationDate);
-    console.log('User Role:', userRole);
 
     if (!token || !expirationDate || !userRole || !firstName) {
       return null;

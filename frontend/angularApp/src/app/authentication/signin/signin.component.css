@@ -5,7 +5,7 @@
   position: absolute;
 }
 .bgFormColor {
-  background-image: linear-gradient(to right, #c8b6a6, #f1dec9);
+  background-image: linear-gradient(to right, #d2b4ff, #ddd3f1);
 }
 .floatDropDown {
   float: right;
@@ -35,7 +35,7 @@ input:focus {
 }
 .btnSubmit {
   border: none;
-  background-color: #8d7b68;
+  background-color: #b787ff;
   color: #fff;
   border-radius: 0;
 }

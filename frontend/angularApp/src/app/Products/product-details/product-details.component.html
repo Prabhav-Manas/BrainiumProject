@@ -31,11 +31,20 @@
           </div>
           <div class="">
             <button
+              *ngIf="!itemAlreadyInCart"
               type="button"
               class="btn btn-outline-success"
               (click)="onAddToCart()"
             >
               Add to Cart
+            </button>
+            <button
+              *ngIf="itemAlreadyInCart"
+              type="button"
+              class="btn btn-outline-danger"
+              (click)="onRemoveFromCart()"
+            >
+              Remove from Cart
             </button>
           </div>
         </div>

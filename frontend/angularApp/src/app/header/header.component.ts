@@ -31,6 +31,7 @@ export class HeaderComponent implements OnInit {
       this.isSeller = this._authService.getUserRole() === 'seller';
       if (this.isLoggedIn) {
         this.firstName = this._authService.getFirstName();
+        this.fetchCartItemCount();
       }
     });
 
@@ -39,16 +40,28 @@ export class HeaderComponent implements OnInit {
     this.isSeller = this._authService.getUserRole() === 'seller';
     if (this.isLoggedIn) {
       this.firstName = this._authService.getFirstName();
+      this.fetchCartItemCount();
     }
 
     this._cartService.getCartItemCount().subscribe((count) => {
       this.cartItemCount = count;
     });
+
+    this._cartService.cartUpdated.subscribe((count: number) => {
+      this.cartItemCount = count;
+    });
   }
 
-  // isSeller(): boolean {
-  //   return this._authService.getUserRole() === 'seller';
-  // }
+  fetchCartItemCount() {
+    this._cartService.getAllCartItems().subscribe(
+      (cartData) => {
+        this.cartItemCount = cartData.cartItems.length;
+      },
+      (error) => {
+        console.log('Error Fetching Cart Items:=>', error);
+      }
+    );
+  }
 
   toggleCollapsed() {
     this.collapsed = !this.collapsed;

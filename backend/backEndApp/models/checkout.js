@@ -1,3 +1,4 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const checkoutSchema = new mongoose.Schema({
@@ -9,6 +10,7 @@ const checkoutSchema = new mongoose.Schema({
         ref: "Product",
         required: true,
       },
+      quantity: { type: Number, required: true },
     },
   ],
   totalAmount: { type: Number, required: true },
