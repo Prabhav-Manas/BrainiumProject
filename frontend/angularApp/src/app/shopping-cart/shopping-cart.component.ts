@@ -121,4 +121,3 @@ export class ShoppingCartComponent implements OnInit {
     });
   }
 }
-// }

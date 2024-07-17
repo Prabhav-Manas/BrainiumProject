@@ -3,15 +3,7 @@ export const environment = {
   baseUrl: 'http://localhost:8080/api/user',
   wildRoute: 'http://localhost:8080/api/invalid-url',
   myCart: 'http://localhost:8080/api/cart',
-  checkout: 'http://localhost:8080/api/checkout',
+  checkout: 'http://localhost:8080/api/payment',
+  stripePublicKey:
+    'pk_test_51PacOZ2KZ7ovD5V6PkZZKPjfTarqVidUtBCEgZcIEqOZKFqeMwP2EvuWmnj2vnRXMk0Aj1KSxdGqbaN7GY7D3dPG00FzHGAJvp',
 };
-
-// export const myCart = {
-//   production: false,
-//   baseUrl:
-// };
-
-// export const proceedToCheckout = {
-//   production: false,
-//   baseUrl: '',
-// };

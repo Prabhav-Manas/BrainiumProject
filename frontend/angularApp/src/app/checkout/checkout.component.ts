@@ -1,15 +1,9 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CheckoutService } from '../appServices/checkout.service';
-// import { loadStripe } from '@stripe/stripe-js';
-import { CheckoutItem } from '../appModels/checkoutItem.model';
-import { injectStripe, StripePaymentElementComponent } from 'ngx-stripe';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
-import {
-  StripeElementsOptions,
-  StripePaymentElementOptions,
-} from '@stripe/stripe-js';
-import { PaymentService } from '../appServices/payment.service';
+import { UntypedFormBuilder } from '@angular/forms';
+import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-checkout',
@@ -17,115 +11,83 @@ import { PaymentService } from '../appServices/payment.service';
   styleUrls: ['./checkout.component.css'],
 })
 export class CheckoutComponent implements OnInit {
-  @ViewChild(StripePaymentElementComponent)
-  paymentElement!: StripePaymentElementComponent;
-
-  paymentElementForm = this.fb.group({
-    name: ['John Doe', [Validators.required]],
-    email: ['support@ngx-stripe.dev', [Validators.required]],
-    address: [''],
-    zipcode: [''],
-    city: [''],
-    amount: [0, [Validators.required, Validators.pattern(/\d+/)]],
-  });
-
-  elementsOptions: StripeElementsOptions = {
-    locale: 'en',
-    clientSecret: '',
-    appearance: { theme: 'flat' },
-  };
-
-  paymentElementOptions: StripePaymentElementOptions = {
-    layout: {
-      type: 'tabs',
-      defaultCollapsed: false,
-      radios: false,
-      spacedAccordionItems: false,
-    },
-  };
-
-  stripe = injectStripe(
-    '{{pk_test_51PacOZ2KZ7ovD5V6PkZZKPjfTarqVidUtBCEgZcIEqOZKFqeMwP2EvuWmnj2vnRXMk0Aj1KSxdGqbaN7GY7D3dPG00FzHGAJvp}}'
-  );
-  // paying = signal(false);
-
-  cartItems: any[] = [];
-  subtotal: number = 0;
+  stripe: Stripe | null = null;
+  card: StripeCardElement | null = null;
+  name: string = '';
+  address: string = '';
+  amount: number = 0;
 
   constructor(
     private fb: UntypedFormBuilder,
-    private _paymentService: PaymentService,
+    private _checkoutService: CheckoutService,
     private router: Router
   ) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state) {
-      const state = navigation.extras.state as {
-        cartItems: any[];
-        subtotal: number;
-      };
-      this.cartItems = state.cartItems;
-      this.subtotal = state.subtotal;
-      this.paymentElementForm.patchValue({ amount: this.subtotal });
+      this.amount = navigation.extras.state['subtotal'];
     }
   }
 
-  ngOnInit(): void {
-    this._paymentService
-      .createPaymentIntent(this.paymentElementForm.value.amount)
-      .subscribe(
-        ({ clientSecret }) => {
-          this.elementsOptions.clientSecret = clientSecret;
-        },
-        (error) => {
-          console.log('Error in payment-intent', error);
+  async ngOnInit() {
+    this.stripe = await loadStripe(environment.stripePublicKey);
+
+    const elements = this.stripe?.elements();
+    if (!elements) {
+      console.error('Stripe elements could not be loaded.');
+      return;
+    }
+
+    this.card = elements.create('card');
+    this.card.mount('#card-element');
+
+    this.card.on('change', (event: any) => {
+      const displayError = document.getElementById('card-errors');
+      if (event.error) {
+        displayError!.textContent = event.error.message;
+      } else {
+        displayError!.textContent = '';
+      }
+    });
+  }
+
+  checkout(event: Event) {
+    event.preventDefault();
+
+    this._checkoutService.createPaymentIntent(this.amount * 100).subscribe(
+      (response) => {
+        const paymentIntent = response.clientSecret;
+
+        if (!this.stripe || !this.card || !paymentIntent) {
+          console.error('Stripe or card element not properly initialized.');
+          return;
         }
-      );
-  }
 
-  pay() {
-    if (this.paymentElementForm.invalid) {
-      return;
-    }
-
-    if (!this.paymentElement?.elements) {
-      console.error('Stripe elements not initialized');
-      return;
-    }
-
-    const { name, email, address, zipcode, city } =
-      this.paymentElementForm.getRawValue();
-
-    this.stripe
-      .confirmPayment({
-        elements: this.paymentElement.elements,
-        confirmParams: {
-          payment_method_data: {
-            billing_details: {
-              name: name as string,
-              email: email as string,
-              address: {
-                line1: address as string,
-                postal_code: zipcode as string,
-                city: city as string,
+        this.stripe
+          .confirmCardPayment(paymentIntent, {
+            payment_method: {
+              card: this.card,
+              billing_details: {
+                name: this.name,
               },
             },
-          },
-        },
-        redirect: 'if_required',
-      })
-      .subscribe((result: any) => {
-        // this.paying.set(false);
-
-        if (result.error) {
-          // Show error to your customer (e.g., insufficient funds)
-          alert({ success: false, error: result.error.message });
-        } else {
-          // The payment has been processed!
-          if (result.paymentIntent.status === 'succeeded') {
-            // Show a success message to your customer
-            alert({ success: true });
-          }
-        }
-      });
+            shipping: {
+              name: this.name,
+              address: {
+                line1: this.address,
+              },
+            },
+          })
+          .then(({ error: confirmError }) => {
+            if (confirmError) {
+              console.error('Error confirming card payment:', confirmError);
+            } else {
+              console.log('Payment successful!');
+            }
+          });
+      },
+      (error) => {
+        console.error('Error creating payment intent:', error);
+      }
+    );
   }
 }

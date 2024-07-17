@@ -24,16 +24,10 @@
               </td>
               <td>{{ item.product.productName }}</td>
               <td class="d-flex justify-content-around" colspan="1">
-                <!-- <input
-                  type="number"
-                  [(ngModel)]="item.quantity"
-                  (input)="updateCartItem(item)"
-                  min="1"
-                /> -->
                 <div class="quantity-control">
                   <i
                     class="fa fa-minus-circle mt-2"
-                    aria-hidden="true"
+                    aria-hidden="true pointer"
                     (click)="decrementQuantity(item)"
                   ></i>
                   <input
@@ -45,7 +39,7 @@
                     min="1"
                   />
                   <i
-                    class="fa fa-plus-circle mt-2"
+                    class="fa fa-plus-circle mt-2 pointer"
                     aria-hidden="true"
                     (click)="incrementQuantity(item)"
                   ></i>

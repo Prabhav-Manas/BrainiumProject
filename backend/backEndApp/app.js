@@ -74,7 +74,7 @@ app.use("/api/category", categoryRoute);
 app.use("/api/cart", cartRoute);
 
 // ---Payment-Gateway---
-app.use("/api/payment-intent", checkoutRoute);
+app.use("/api/payment", checkoutRoute);
 
 // ---Error Handling Middleware in Express-Validation---
 app.use(function (err, req, res, next) {
