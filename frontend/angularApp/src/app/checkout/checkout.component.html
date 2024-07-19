@@ -1,12 +1,39 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 offset-md-3">
-      <div class="card">
+      <div class="card" *ngIf="!paymentStatus">
         <div class="header p-2">
           <h1>Payment</h1>
         </div>
+        <div class="d-md-flex justify-content-around my-3">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="payNow"
+              id="payNow"
+              [(ngModel)]="selectedOption"
+              value="Pay Now"
+              (click)="onSelectPay()"
+              checked
+            />
+            <label class="form-check-label" for="option1"> Pay Now </label>
+          </div>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="COD"
+              id="COD"
+              [(ngModel)]="selectedOption"
+              value="COD"
+              (click)="onSelectCashOnDelivery()"
+            />
+            <label class="form-check-label" for="COD"> Cash on Delivery </label>
+          </div>
+        </div>
         <div class="card-body">
-          <form (submit)="checkout($event)">
+          <form #checkoutForm="ngForm" (ngSubmit)="checkout(checkoutForm)">
             <div class="form-group mb-2">
               <label for="name">Name on card</label>
               <input
@@ -39,16 +66,47 @@
                 readonly
               />
             </div>
-            <div class="form-group mb-2">
-              <label for="card-element">Credit or Debit Card</label>
-              <div id="card-element" class="form-control">
-                <!-- A Stripe Element will be inserted here. -->
+            <div *ngIf="show">
+              <div class="form-group mb-2">
+                <label for="card-element">Credit or Debit Card</label>
+                <div id="card-element" class="form-control">
+                  <!-- A Stripe Element will be inserted here. -->
+                </div>
+                <!-- Used to display form errors -->
+                <div id="card-errors" role="alert"></div>
               </div>
-              <!-- Used to display form errors -->
-              <div id="card-errors" role="alert"></div>
             </div>
-            <button class="btn btn-primary" type="submit">Pay Now</button>
+            <button class="btn btn-primary" type="submit">
+              {{ onSelectPayNow ? "Pay Now" : "Place Order" }}
+            </button>
           </form>
+        </div>
+      </div>
+      <div class="mt-3" *ngIf="paymentStatus">
+        <div class="alert alert-success" *ngIf="paymentStatus === 'success'">
+          Payment Successful and Order Placed!
+          <button
+            type="button"
+            class="btn btn-warning"
+            routerLink="/user-dashboard"
+          >
+            <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+            Continue Shopping
+          </button>
+        </div>
+        <div class="alert alert-danger" *ngIf="paymentStatus === 'failed'">
+          Payment Failed! Please try again.
+        </div>
+        <div class="alert alert-info" *ngIf="paymentStatus === 'order placed'">
+          Order Placed with Cash On Delivery!
+          <button
+            type="button"
+            class="btn btn-warning"
+            routerLink="/user-dashboard"
+          >
+            <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+            Continue Shopping
+          </button>
         </div>
       </div>
     </div>
