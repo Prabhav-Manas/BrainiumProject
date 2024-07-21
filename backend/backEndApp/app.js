@@ -10,7 +10,6 @@ const productRoute = require("./routes/product");
 const categoryRoute = require("./routes/category");
 const cartRoute = require("./routes/cart");
 const checkoutRoute = require("./routes/checkout");
-const webhookRoutes = require("./routes/webhook");
 
 const multer = require("multer");
 const path = require("path");
@@ -76,11 +75,7 @@ app.use("/api/cart", cartRoute);
 
 // ---Payment-Gateway---
 app.use("/api/payment", checkoutRoute);
-
 app.use("/api/checkout", checkoutRoute);
-
-// ---WebHook---
-app.use("/webhook", webhookRoutes);
 
 // ---Save Order---
 app.use("/order", checkoutRoute);
