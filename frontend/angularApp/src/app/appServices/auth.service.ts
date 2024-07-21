@@ -106,6 +106,7 @@ export class AuthService {
       console.log('jwtDecode:=>', decodedToken);
       this.userRole = decodedToken.user.role;
       this.firstName = decodedToken.user.firstName;
+      const userId = decodedToken.user.id;
       const expiresInDuration = res.expiresIn ?? 3600; // Default to 1 hr if undefined
       this.setAuthTimer(expiresInDuration);
       this.isAuthenticated = true;
@@ -116,7 +117,8 @@ export class AuthService {
         this.token,
         expirationDate,
         this.userRole,
-        this.firstName
+        this.firstName,
+        userId
       );
       this.showSuccess(res.message);
     }
@@ -166,12 +168,14 @@ export class AuthService {
     token: string,
     expirationDate: Date,
     userRole: string,
-    firstName: string
+    firstName: string,
+    userId: string
   ) {
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
     localStorage.setItem('userRole', userRole);
     localStorage.setItem('firstName', firstName);
+    localStorage.setItem('userId', userId);
   }
 
   // ----Clear Authentication Data----

@@ -156,9 +156,10 @@ exports.logInSellerUser = async (req, res) => {
     // ---Prepare the payload for JWT---
     const payload = {
       user: {
-        id: user.id,
+        id: user._id,
         type: userType,
         role: user.userType,
+        firstName: user.firstName,
       },
     };
 

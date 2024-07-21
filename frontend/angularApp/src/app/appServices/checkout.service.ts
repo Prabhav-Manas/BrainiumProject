@@ -12,7 +12,47 @@ export class CheckoutService {
 
   constructor(private http: HttpClient) {}
 
-  createPaymentIntent(amount: number): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/payment-intent`, { amount });
+  // createPaymentIntent(amount: number): Observable<any> {
+  //   return this.http.post<any>(`${this.baseUrl}/payment-intent`, { amount });
+  // }
+
+  createPaymentIntent(
+    amount: number,
+    userId: string,
+    name: string,
+    address: string
+  ): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/payment-intent`, {
+      amount,
+      userId,
+      name,
+      address,
+    });
+  }
+
+  saveOrderDetails(
+    userId: string,
+    name: string,
+    address: string,
+    amount: number,
+    paymentIntentId?: string
+  ): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/save-order`, {
+      userId,
+      name,
+      address,
+      amount,
+      paymentIntentId,
+    });
+  }
+
+  updatePaymentStatus(
+    paymentIntentId: string,
+    status: string
+  ): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/update-payment-status`, {
+      paymentIntentId,
+      status,
+    });
   }
 }

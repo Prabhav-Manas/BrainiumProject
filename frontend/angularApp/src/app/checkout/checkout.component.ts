@@ -25,6 +25,7 @@ export class CheckoutComponent implements OnInit {
   address: string = '';
   amount: number = 0;
   paymentStatus: string = '';
+  userId: any = '';
 
   // checkoutForm!: FormGroup;
 
@@ -37,11 +38,6 @@ export class CheckoutComponent implements OnInit {
     if (navigation?.extras?.state) {
       this.amount = navigation.extras.state['subtotal'];
     }
-
-    // this.checkoutForm = this.fb.group({
-    //   name: [''],
-    //   address: [''],
-    // });
   }
 
   onSelectPay() {
@@ -65,6 +61,10 @@ export class CheckoutComponent implements OnInit {
 
     // Mount the Stripe element by default if Pay Now is selected
     this.mountStripeElement();
+
+    // Retrieve User Details
+    this.userId = localStorage.getItem('userId'); // Ensure this retrieves the correct value
+    console.log('Retrieved userId:', this.userId); // Add this line to debug
   }
 
   mountStripeElement() {
@@ -100,50 +100,80 @@ export class CheckoutComponent implements OnInit {
     // event.preventDefault();
 
     if (this.onSelectPayNow) {
-      this._checkoutService.createPaymentIntent(this.amount * 100).subscribe(
-        (response) => {
-          const paymentIntent = response.clientSecret;
+      this._checkoutService
+        .createPaymentIntent(
+          this.amount * 100,
+          this.userId,
+          this.name,
+          this.address
+        )
+        .subscribe(
+          (response) => {
+            const paymentIntentId = response.paymentIntentId;
 
-          if (!this.stripe || !this.card || !paymentIntent) {
-            console.error('Stripe or card element not properly initialized.');
-            return;
-          }
+            if (!this.stripe || !this.card || !paymentIntentId) {
+              console.log('Stripe or card element not properly initialized.');
+              return;
+            }
 
-          this.stripe
-            .confirmCardPayment(paymentIntent, {
-              payment_method: {
-                card: this.card,
-                billing_details: {
+            this.stripe
+              .confirmCardPayment(response.clientSecret, {
+                payment_method: {
+                  card: this.card,
+                  billing_details: {
+                    name: this.name,
+                  },
+                },
+                shipping: {
                   name: this.name,
+                  address: {
+                    line1: this.address,
+                  },
                 },
-              },
-              shipping: {
-                name: this.name,
-                address: {
-                  line1: this.address,
-                },
-              },
-            })
-            .then(({ error: confirmError }) => {
-              if (confirmError) {
-                console.error('Error confirming card payment:', confirmError);
-                this.paymentStatus = 'failed';
-              } else {
-                console.log('Payment successful!');
-                this.paymentStatus = 'success';
-                this.resetForm(form);
-              }
-            });
-        },
-        (error) => {
-          console.error('Error creating payment intent:', error);
-          this.paymentStatus = 'failed';
-        }
-      );
+              })
+              .then(({ error: confirmError, paymentIntent }) => {
+                if (confirmError) {
+                  console.log('Error confirming card payment:', confirmError);
+                  this.paymentStatus = 'failed';
+                } else if (
+                  paymentIntent &&
+                  paymentIntent.status === 'succeeded'
+                ) {
+                  console.log('Payment successful!');
+                  this.paymentStatus = 'success';
+
+                  // Update Payment Status on Server
+                  this._checkoutService
+                    .updatePaymentStatus(paymentIntentId, 'completed')
+                    .subscribe(() => {
+                      this._checkoutService
+                        .saveOrderDetails(
+                          this.userId,
+                          this.name,
+                          this.address,
+                          this.amount,
+                          paymentIntentId
+                        )
+                        .subscribe(() => {
+                          this.resetForm(form);
+                        });
+                    });
+                }
+              });
+          },
+          (error) => {
+            console.error('Error creating payment intent:', error);
+            this.paymentStatus = 'failed';
+          }
+        );
     } else {
       console.log('Order Placed with Cash On Delivery!');
-      this.paymentStatus = 'order placed';
-      this.resetForm(form);
+      this.paymentStatus = 'Order placed';
+      this._checkoutService
+        .saveOrderDetails(this.userId, this.name, this.address, this.amount)
+        .subscribe(() => {
+          this.resetForm(form);
+        });
     }
   }
 
