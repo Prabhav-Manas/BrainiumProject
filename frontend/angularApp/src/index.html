@@ -1,16 +1,120 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>AngularApp</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
-<body class="mat-typography">
-  <app-root></app-root>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularApp</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="mat-typography">
+    <app-root></app-root>
+  </body>
 </html>
+
+<!-- <div class="" *ngIf="isSeller; else userNavbar">
+  <button
+    class="btn btn-primary"
+    type="button"
+    data-bs-toggle="offcanvas"
+    data-bs-target="#offcanvasTop"
+    aria-controls="offcanvasTop"
+  >
+    Menu
+  </button>
+
+  <div
+    class="offcanvas offcanvas-start"
+    tabindex="-1"
+    id="offcanvasTop"
+    aria-labelledby="offcanvasTopLabel"
+  >
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasTopLabel">Offcanvas Menu</h5>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="offcanvas"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="offcanvas-body sidenav">
+      <div class="">
+        <div class="logo-container">
+          <button class="logo">A</button>
+          <div class="logo-text">Angular</div>
+        </div>
+        <ul class="sidenav-nav">
+          <li class="sidenav-nav-item">
+            <a
+              class="side-nav-link"
+              [routerLink]="['/seller-dashboard']"
+              (click)="onClickDashboard()"
+            >
+              <i class="sidenav-link-icon fa fa-home"></i>
+              <span class="sidenav-link-text">Dashboard</span>
+            </a>
+          </li>
+
+          <li class="sidenav-nav-item">
+            <a class="side-nav-link" (click)="toggleMenu('product')">
+              <i class="sidenav-link-icon fa fa-shopping-bag"></i>
+              <span class="sidenav-link-text">Product</span>
+            </a>
+            <div class="sub-menu" *ngIf="isProductMenuOpen">
+              <a
+                class="side-nav-link"
+                routerLink="/add-product"
+                (click)="onClickAddProduct()"
+              >
+                <i class="sidenav-link-icon fa fa-plus-square-o"></i>
+                <span>Add Product</span>
+              </a>
+              <a
+                class="side-nav-link"
+                [routerLink]="['/product-list']"
+                (click)="onClickProductList()"
+              >
+                <i class="sidenav-link-icon fa fa-list"></i>
+                <span>Product List</span>
+              </a>
+            </div>
+          </li>
+
+          <li class="sidenav-nav-item">
+            <a class="side-nav-link" (click)="toggleMenu('category')">
+              <i class="sidenav-link-icon fa fa-object-group"></i>
+              <span class="sidenav-link-text">Category</span>
+            </a>
+            <div class="sub-menu" *ngIf="isCategoryMenuOpen">
+              <a
+                class="side-nav-link"
+                [routerLink]="['/category-list']"
+                (click)="onClickCategory()"
+              >
+                <i class="sidenav-link-icon fa fa-list"></i>
+                <span>Category List</span>
+              </a>
+            </div>
+          </li>
+
+          <li class="sidenav-nav-item">
+            <a class="side-nav-link" (click)="onLogOut()">
+              <i class="sidenav-link-icon fa fa-power-off"></i>
+              <span class="sidenav-link-text">Logout</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div> -->

@@ -34,8 +34,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(express.static(path.join(__dirname, "images")));
+app.use(bodyParser.urlencoded({ extended: true }));
+// app.use("/images", express.static(path.join(__dirname, "images")));
 
 const mongoDBURL = process.env.MONGODB_URL;
 
@@ -49,36 +49,30 @@ mongoose
   });
 
 // ---For Image Upload---
-app.use((err, req, res, next) => {
-  if (err instanceof multer.MulterError) {
-    console.log("Multer Error:", err.message);
-    return res
-      .status(400)
-      .json({ message: "File upload error", error: err.message });
-  } else if (err.message === "Invalid MIME Type") {
-    console.log("Invalid MIME Type:", err.message);
-    return res
-      .status(400)
-      .json({ message: "Invalid file type", error: err.message });
-  } else {
-    console.log("Internal Error:", err.message);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: err.message });
-  }
-});
+// app.use((err, req, res, next) => {
+//   if (err instanceof multer.MulterError) {
+//     console.log("Multer Error:", err.message);
+//     return res
+//       .status(400)
+//       .json({ message: "File upload error", error: err.message });
+//   } else if (err.message === "Invalid MIME Type") {
+//     console.log("Invalid MIME Type:", err.message);
+//     return res
+//       .status(400)
+//       .json({ message: "Invalid file type", error: err.message });
+//   } else {
+//     console.log("Internal Error:", err.message);
+//     return res
+//       .status(500)
+//       .json({ message: "Internal server error", error: err.message });
+//   }
+// });
 
 app.use("/api/user", sellerUserRoute);
 app.use("/api/product", productRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/cart", cartRoute);
-
-// ---Payment-Gateway---
-app.use("/api/payment", checkoutRoute);
 app.use("/api/checkout", checkoutRoute);
-
-// ---Save Order---
-app.use("/order", checkoutRoute);
 
 // ---Error Handling Middleware in Express-Validation---
 app.use(function (err, req, res, next) {
@@ -100,11 +94,20 @@ app.use(function (err, req, res, next) {
   });
 });
 
-// ---Handle Invalid URLs---
-app.use("/api/*", (req, res) => {
-  res.status(404).json({
-    message: "Bad Request. Invalid URL",
-  });
-});
-
 module.exports = app;
+
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     const isValid = MIME_TYPE_MAP[file.mimetype];
+//     let error = new Error("Invalid mime type");
+//     if (!isValid) {
+//       error = null;
+//     }
+//     cb(error, "backEndApp/images");
+//   },
+//   filename: (req, file, cb) => {
+//     const name = file.originalname.toLowerCase().split(" ").join("-");
+//     const ext = MIME_TYPE_MAP[file.mimetype];
+//     cb(null, name + "-" + Date.now() + "." + ext);
+//   },
+// });

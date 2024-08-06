@@ -9,7 +9,12 @@ router.post("/payment-intent", checkoutController.createPaymentIntent);
 router.post("/save-order", checkoutController.saveOrderDetails);
 
 // Updating Payment Status
-
 router.post("/update-payment-status", checkoutController.updatePaymentStatus);
+
+// Route for fetching orders by user
+router.get("/order-history/:userId", checkoutController.getOrderHistory);
+
+// Route for seller-orders
+router.get("/seller-orders/:userId", checkoutController.getSellerOrders);
 
 module.exports = router;

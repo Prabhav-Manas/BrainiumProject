@@ -1,34 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
+const authenticateUser = require("../middlewares/auth");
 const truncateDescription = require("../middlewares/truncateDescription");
-// const upload = require("../middlewares/multer");
 const ProductController = require("../controllers/product");
-
-// const truncateDescription = (req, res, next) => {
-//   if (req.body.description && req.body.description.length > 300) {
-//     req.body.description = req.body.description.substring(0, 300) + "...";
-//   }
-//   next();
-// };
 
 const MIME_TYPE_MAP = {
   "image/png": "png",
   "image/jpeg": "jpg",
   "image/jpg": "jpg",
-  "image/gif": "gif",
-  "image/svg+xml": "svg",
-  "application/octet-stream": "jpg",
+  // "image/gif": "gif",
+  // "image/svg+xml": "svg",
+  // "application/octet-stream": "jpg",
 };
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const isValid = MIME_TYPE_MAP[file.mimetype];
+    let error = new Error("Invalid mime type");
     if (!isValid) {
-      const error = new Error("Invalid MIME Type");
-      return cb(error);
+      error = null;
     }
-    cb(null, "images");
+    cb(error, "backEndApp/images");
   },
   filename: (req, file, cb) => {
     const name = file.originalname.toLowerCase().split(" ").join("-");
@@ -39,17 +32,33 @@ const storage = multer.diskStorage({
 
 router.post(
   "/add-product",
-  multer({ storage: storage }).array("images", 5),
+  multer({ storage: storage }).single("images"),
+  authenticateUser,
   truncateDescription,
   ProductController.addProduct
 );
 
-router.get("/all-products", truncateDescription, ProductController.getProducts);
+router.get(
+  "/all-products",
+  authenticateUser,
+  truncateDescription,
+  ProductController.getProducts
+);
 
-router.get("/:id", truncateDescription, ProductController.getSingleProduct);
+router.get(
+  "/:id",
+  authenticateUser,
+  truncateDescription,
+  ProductController.getSingleProduct
+);
 
-router.put("/:id", truncateDescription, ProductController.updateProduct);
+router.put(
+  "/:id",
+  authenticateUser,
+  truncateDescription,
+  ProductController.updateProduct
+);
 
-router.delete("/:id", ProductController.deleteProduct);
+router.delete("/:id", authenticateUser, ProductController.deleteProduct);
 
 module.exports = router;

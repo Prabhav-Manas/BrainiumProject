@@ -1,0 +1,54 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <table class="table table-responsive table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Product Image</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Address</th>
+            <th scope="col">Status</th>
+            <th scope="col">Date</th>
+            <th scope="col">Transaction ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="orders.length > 0; else noOrders">
+            <ng-container *ngFor="let order of orders">
+              <ng-container *ngFor="let item of order.cartItems">
+                <tr>
+                  <td>
+                    <img
+                      [src]="item.productId.image"
+                      alt="{{ item.productId.productName }}"
+                      style="width: 50px; height: 50px"
+                    />
+                  </td>
+                  <td>{{ item.productId.productName }}</td>
+                  <td>{{ item.productId.price | currency }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ order.delivery.address }}</td>
+                  <td>{{ order.delivery.deliveryStatus }}</td>
+                  <td>
+                    {{ order.orderDate | date : "MMM dd, yyyy 'at' hh:mm a" }}
+                  </td>
+                  <td>{{ order.payment.id }}</td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+
+          <ng-template #noOrders>
+            <tr>
+              <td colspan="8">
+                <h2 class="text-danger">No Order Found!</h2>
+              </td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

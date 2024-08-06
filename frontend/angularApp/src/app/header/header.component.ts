@@ -3,6 +3,8 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/appServices/auth.service';
 import { navBarData } from './nav-data';
 import { CartService } from '../appServices/cart.service';
+import { Router } from '@angular/router';
+import { Offcanvas } from 'bootstrap';
 
 @Component({
   selector: 'app-header',
@@ -11,6 +13,7 @@ import { CartService } from '../appServices/cart.service';
 })
 export class HeaderComponent implements OnInit {
   collapsed: boolean = false;
+  isCollapsed: boolean = true;
   isProductMenuOpen: boolean = false;
   isCategoryMenuOpen: boolean = false;
 
@@ -22,7 +25,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private _authService: AuthService,
-    private _cartService: CartService
+    private _cartService: CartService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -67,8 +71,67 @@ export class HeaderComponent implements OnInit {
     this.collapsed = !this.collapsed;
   }
 
+  toggleCollapse() {
+    this.isCollapsed = !this.isCollapsed;
+  }
+
   closeSideNav() {
     this.collapsed = false;
+  }
+
+  closeSideNavOnMenuClick() {
+    const offcanvasElement = document.getElementById('offcanvasTop');
+    if (offcanvasElement) {
+      const offcanvas = Offcanvas.getInstance(offcanvasElement);
+      if (offcanvas) {
+        offcanvas.hide();
+      }
+    }
+  }
+
+  onClickDashboard() {
+    this.router.navigate(['/seller-dashboard']);
+    // ------This will close sidenav bar when click on menu link------
+    const closeButton = document.querySelector(
+      '[data-bs-dismiss="offcanvas"]'
+    ) as HTMLButtonElement;
+    if (closeButton) {
+      closeButton.click();
+    }
+  }
+
+  onClickAddProduct() {
+    this.router.navigate(['/add-product']);
+    // ------This will close sidenav bar when click on menu link------
+    const closeButton = document.querySelector(
+      '[data-bs-dismiss="offcanvas"]'
+    ) as HTMLButtonElement;
+    if (closeButton) {
+      closeButton.click();
+    }
+  }
+
+  onClickProductList() {
+    this.router.navigate(['/product-list']);
+    // ------This will close sidenav bar when click on menu link------
+    const closeButton = document.querySelector(
+      '[data-bs-dismiss="offcanvas"]'
+    ) as HTMLButtonElement;
+    if (closeButton) {
+      closeButton.click();
+    }
+  }
+
+  onClickCategory() {
+    this.router.navigate(['/category-list']);
+    this.closeSideNavOnMenuClick();
+    // ------This will close sidenav bar when click on menu link------
+    const closeButton = document.querySelector(
+      '[data-bs-dismiss="offcanvas"]'
+    ) as HTMLButtonElement;
+    if (closeButton) {
+      closeButton.click();
+    }
   }
 
   toggleMenu(menu: string) {

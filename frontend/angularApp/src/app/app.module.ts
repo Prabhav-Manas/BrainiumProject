@@ -12,8 +12,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCardModule } from '@angular/material/card';
-// import { MatFormFieldModule } from '@angular/material/form-field';
-// import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxStripeModule } from 'ngx-stripe';
@@ -38,6 +36,7 @@ import { ProductDetailsComponent } from './Products/product-details/product-deta
 import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { FooterComponent } from './footer/footer.component';
+import { OrderHistoryComponent } from './order-history/order-history.component';
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -60,6 +59,7 @@ import { FooterComponent } from './footer/footer.component';
     ShoppingCartComponent,
     CheckoutComponent,
     FooterComponent,
+    OrderHistoryComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { CheckoutItem } from '../appModels/checkoutItem.model';
 import { Observable } from 'rxjs';
+import { CartItems } from '../appModels/cartItem.model';
 
 @Injectable({
   providedIn: 'root',
@@ -12,47 +12,59 @@ export class CheckoutService {
 
   constructor(private http: HttpClient) {}
 
-  // createPaymentIntent(amount: number): Observable<any> {
-  //   return this.http.post<any>(`${this.baseUrl}/payment-intent`, { amount });
-  // }
-
   createPaymentIntent(
     amount: number,
     userId: string,
     name: string,
-    address: string
+    delivery: { address: string; deliveryStatus: string },
+    cartItems: CartItems[]
   ): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/payment-intent`, {
       amount,
       userId,
       name,
-      address,
+      delivery,
+      cartItems,
     });
   }
 
   saveOrderDetails(
     userId: string,
     name: string,
-    address: string,
     amount: number,
-    paymentIntentId?: string
+    payment: any,
+    cartItems: CartItems[],
+    delivery: { address: string; deliveryStatus: string }
   ): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/save-order`, {
       userId,
       name,
-      address,
       amount,
-      paymentIntentId,
+      payment,
+      cartItems,
+      delivery,
     });
   }
 
-  updatePaymentStatus(
-    paymentIntentId: string,
-    status: string
-  ): Observable<any> {
+  updatePaymentStatus(paymentId: any, status: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/update-payment-status`, {
-      paymentIntentId,
+      payment: { id: paymentId },
       status,
     });
+  }
+
+  // getOrderHistory(userId: string): Observable<any> {
+  //   return this.http.get<any>(`${this.baseUrl}/order-history/${userId}`);
+  // }
+
+  getOrderHistory(userId?: string): Observable<any> {
+    const url = userId
+      ? `${this.baseUrl}/order-history/${userId}`
+      : `${this.baseUrl}/order-history`;
+    return this.http.get<any>(url);
+  }
+
+  getSellerOrders(sellerId: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/seller-orders/${sellerId}`);
   }
 }

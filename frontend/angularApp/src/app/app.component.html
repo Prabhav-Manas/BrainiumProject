@@ -1,14 +1,12 @@
 <app-loader></app-loader>
 
+<app-header></app-header>
 <div class="container-fluid">
   <div class="row">
-    <!-- <div class="col-md-2"> -->
-    <app-header></app-header>
-    <!-- <app-checkout></app-checkout> -->
-    <!-- </div> -->
-    <!-- <div class="col-md-10"> -->
-    <router-outlet class="mt-5"></router-outlet>
-    <!-- </div> -->
-    <app-footer></app-footer>
+    <div [ngClass]="{ 'mt-5': userType === 'user' }">
+      <router-outlet class="mt-5"></router-outlet>
+    </div>
+
+    <app-footer *ngIf="userType === 'user'"></app-footer>
   </div>
 </div>

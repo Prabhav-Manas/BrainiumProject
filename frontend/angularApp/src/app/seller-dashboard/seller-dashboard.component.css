@@ -1,0 +1,22 @@
+.seller-content {
+  margin: 0 100px;
+}
+.order-card {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.product-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-right: 1rem;
+}
+
+.order-details {
+  flex: 1;
+}

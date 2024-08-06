@@ -1,11 +1,10 @@
-const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const checkoutSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  items: [
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  cartItems: [
     {
-      product: {
+      productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
         required: true,
@@ -13,11 +12,15 @@ const checkoutSchema = new mongoose.Schema({
       quantity: { type: Number, required: true },
     },
   ],
-  totalAmount: { type: Number, required: true },
-  paymentStatus: {
-    type: String,
-    enum: ["pending", "completed", "failed"],
-    default: "pending",
+  amount: { type: Number, required: true },
+  payment: {
+    id: { type: String, required: true },
+    status: { type: String, default: "pending" },
+  },
+  name: { type: String }, // Name field
+  delivery: {
+    address: { type: String },
+    deliveryStatus: { type: String, default: "processing" },
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

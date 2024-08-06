@@ -1,0 +1,51 @@
+<div *ngIf="orders.length > 0; else noOrders" class="seller-content">
+  <div class="row">
+    <div
+      *ngFor="let order of orders"
+      class="card mb-3 col-md-4 d-md-flex justify-content-between"
+    >
+      <div class="card-body">
+        <h3 class="card-title text-success">
+          <strong>Order ID:</strong> {{ order._id }}
+        </h3>
+        <p class="card-text">
+          <strong>User:</strong> {{ order.userDetails.email }}<br />
+          <strong>Delivery Address:</strong> {{ order.delivery.address }}<br />
+          <strong>Delivery Status:</strong> {{ order.delivery.deliveryStatus
+          }}<br />
+          <strong>Payment Status:</strong> {{ order.payment.status }}<br />
+          <strong>Amount:</strong> {{ order.amount | currency }}
+        </p>
+        <ng-container *ngFor="let item of order.cartItems">
+          <div class="card mb-2">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img
+                  *ngIf="item.productDetails.image"
+                  [src]="item.productDetails.image"
+                  alt="Product Image"
+                  class="img-fluid rounded-start"
+                />
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <p class="card-text">
+                    <strong>Product:</strong>
+                    {{ item.productDetails.productName }}<br />
+                    <strong>Quantity:</strong> {{ item.quantity }}<br />
+                    <strong>Price:</strong>
+                    {{ item.productDetails.price | currency }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noOrders>
+  <p>No orders found for this seller.</p>
+</ng-template>

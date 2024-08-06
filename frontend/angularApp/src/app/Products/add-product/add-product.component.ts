@@ -146,47 +146,85 @@ export class AddProductComponent implements OnInit {
     }
   }
 
+  // onSubmitAddProduct() {
+  //   if (this.sellerAddProductModalForm.valid) {
+  //     const category = this.sellerAddProductModalForm.value.category;
+  //     const productName = this.sellerAddProductModalForm.value.productName;
+  //     const description = this.sellerAddProductModalForm.value.description;
+  //     const price = this.sellerAddProductModalForm.value.price;
+  //     const startDate = this.sellerAddProductModalForm.value.startDate;
+  //     const closeDate = this.sellerAddProductModalForm.value.closeDate;
+  //     const discount = this.sellerAddProductModalForm.value.discount;
+  //     const images = this.sellerAddProductModalForm.value.images;
+
+  //     this._productService
+  //       .addProduct(
+  //         category,
+  //         productName,
+  //         description,
+  //         price,
+  //         startDate,
+  //         closeDate,
+  //         discount
+  //         // images
+  //       )
+  //       .subscribe(
+  //         (res) => {
+  //           console.log('AddProduct:=>', res);
+  //           alert('Product added successfully.');
+  //           this.sellerAddProductModalForm.reset();
+  //           this.imagePreviews = [];
+  //           this.filePicker.nativeElement.value = '';
+  //         },
+  //         (error) => {
+  //           if (
+  //             error.status === 400 &&
+  //             error.error.message === 'Invalid mime type'
+  //           ) {
+  //             alert('Invalid mime type. Please upload a valid image file.');
+  //           } else {
+  //             alert('An error occurred while uploading the image.');
+  //           }
+  //         }
+  //       );
+  //   }
+  //   console.log(this.sellerAddProductModalForm.value);
+  // }
+
   onSubmitAddProduct() {
     if (this.sellerAddProductModalForm.valid) {
-      const category = this.sellerAddProductModalForm.value.category;
-      const productName = this.sellerAddProductModalForm.value.productName;
-      const description = this.sellerAddProductModalForm.value.description;
-      const price = this.sellerAddProductModalForm.value.price;
-      const startDate = this.sellerAddProductModalForm.value.startDate;
-      const closeDate = this.sellerAddProductModalForm.value.closeDate;
-      const discount = this.sellerAddProductModalForm.value.discount;
-      const images = this.sellerAddProductModalForm.value.images;
+      const formValue = this.sellerAddProductModalForm.value;
+
+      // Format dates as ISO strings
+      const startDate = new Date(formValue.startDate).toISOString();
+      const closeDate = new Date(formValue.closeDate).toISOString();
+
+      // Convert discount to a number
+      const discount = parseInt(formValue.discount, 10);
 
       this._productService
         .addProduct(
-          category,
-          productName,
-          description,
-          price,
+          formValue.category,
+          formValue.productName,
+          formValue.description,
+          formValue.price,
           startDate,
           closeDate,
-          discount,
-          images
+          discount
         )
         .subscribe(
           (res) => {
+            console.log('AddProduct:=>', res);
             alert('Product added successfully.');
             this.sellerAddProductModalForm.reset();
             this.imagePreviews = [];
             this.filePicker.nativeElement.value = '';
           },
           (error) => {
-            if (
-              error.status === 400 &&
-              error.error.message === 'Invalid mime type'
-            ) {
-              alert('Invalid mime type. Please upload a valid image file.');
-            } else {
-              alert('An error occurred while uploading the image.');
-            }
+            console.error('Error:', error);
+            alert('An error occurred while adding the product.');
           }
         );
     }
-    console.log(this.sellerAddProductModalForm.value);
   }
 }

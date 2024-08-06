@@ -1,70 +1,90 @@
-<!-- <ng-container *ngIf="userIsAuthenticated"> </ng-container> -->
 <div class="" *ngIf="isLoggedIn">
-  <nav *ngIf="isSeller; else userNavbar" class="sidenav">
-    <!-- Seller Sidebar -->
-    <!-- Include your sidebar HTML here -->
-
-    <!-- SIDE-BARS -->
-    <div class="sidenav">
-      <div class="logo-container">
-        <button class="logo">A</button>
-        <div class="logo-text">Angular</div>
+  <!-- SideNav Bar For userType==='seller' -->
+  <div class="wrapper" *ngIf="isSeller; else userNavbar">
+    <div class="sidenav" [class.collapsed]="isCollapsed">
+      <div class="sidenav-header d-md-flex justify-content-around mt-3">
+        <span class="mt-2" (click)="toggleCollapse()">
+          <i
+            class="fa"
+            [ngClass]="{
+              'fa-bars': isCollapsed,
+              'fa-chevron-left': !isCollapsed
+            }"
+          ></i>
+        </span>
+        <h1 class="mt-1 text-white" *ngIf="!isCollapsed">Seller Dashboard</h1>
       </div>
       <ul class="sidenav-nav">
-        <!-- Dashboard Link -->
         <li class="sidenav-nav-item">
-          <a class="side-nav-link" [routerLink]="['/dashboard']">
+          <a
+            class="side-nav-link"
+            [routerLink]="['/seller-dashboard']"
+            (click)="onClickDashboard()"
+          >
             <i class="sidenav-link-icon fa fa-home"></i>
-            <span class="sidenav-link-text">Dashboard</span>
+            <span *ngIf="!isCollapsed" class="sidenav-link-text text-white"
+              >Dashboard</span
+            >
           </a>
         </li>
-        <!-- Product Link with Submenu -->
         <li class="sidenav-nav-item">
           <a class="side-nav-link" (click)="toggleMenu('product')">
             <i class="sidenav-link-icon fa fa-shopping-bag"></i>
-            <span class="sidenav-link-text">Product</span>
+            <span *ngIf="!isCollapsed" class="sidenav-link-text text-white"
+              >Product</span
+            >
           </a>
-          <div class="sub-menu" *ngIf="isProductMenuOpen">
-            <a class="side-nav-link" routerLink="/add-product">
+          <div class="sub-menu" *ngIf="isProductMenuOpen && !isCollapsed">
+            <a
+              class="side-nav-link"
+              routerLink="/add-product"
+              (click)="onClickAddProduct()"
+            >
               <i class="sidenav-link-icon fa fa-plus-square-o"></i>
               <span>Add Product</span>
             </a>
-            <a class="side-nav-link" [routerLink]="['/product-list']">
+            <a
+              class="side-nav-link"
+              [routerLink]="['/product-list']"
+              (click)="onClickProductList()"
+            >
               <i class="sidenav-link-icon fa fa-list"></i>
               <span>Product List</span>
             </a>
           </div>
         </li>
-        <!-- Category Link with Submenu -->
         <li class="sidenav-nav-item">
           <a class="side-nav-link" (click)="toggleMenu('category')">
             <i class="sidenav-link-icon fa fa-object-group"></i>
-            <span class="sidenav-link-text">Category</span>
+            <span *ngIf="!isCollapsed" class="sidenav-link-text text-white"
+              >Category</span
+            >
           </a>
-          <div class="sub-menu" *ngIf="isCategoryMenuOpen">
-            <a class="side-nav-link" [routerLink]="['/category-list']">
+          <div class="sub-menu" *ngIf="isCategoryMenuOpen && !isCollapsed">
+            <a
+              class="side-nav-link"
+              [routerLink]="['/category-list']"
+              (click)="onClickCategory()"
+            >
               <i class="sidenav-link-icon fa fa-list"></i>
               <span>Category List</span>
             </a>
           </div>
         </li>
-        <!-- Logout Link -->
         <li class="sidenav-nav-item">
           <a class="side-nav-link" (click)="onLogOut()">
             <i class="sidenav-link-icon fa fa-power-off"></i>
-            <span class="sidenav-link-text">Logout</span>
+            <span *ngIf="!isCollapsed" class="sidenav-link-text text-white"
+              >Logout</span
+            >
           </a>
         </li>
       </ul>
     </div>
-    <!-- SIDE-BARS -->
-  </nav>
+  </div>
 
+  <!-- Top NavBar For userType==='user' -->
   <ng-template #userNavbar>
-    <!-- User Top Navbar -->
-    <!-- Include your top navbar HTML here -->
-
-    <!-- Navbar for Non-Sellers -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top bgUserColor">
       <div class="container-fluid">
         <button
@@ -122,7 +142,11 @@
                     class="dropdown-menu"
                     aria-labelledby="dropdownMenuButton1"
                   >
-                    <li><a class="dropdown-item" href="#">Your Order</a></li>
+                    <li>
+                      <a class="dropdown-item" routerLink="/orderHistory"
+                        >Your Order</a
+                      >
+                    </li>
                     <li><a class="dropdown-item" href="#">Track Order</a></li>
                     <li>
                       <a class="dropdown-item" (click)="onLogOut()">Logout</a>

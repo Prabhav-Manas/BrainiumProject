@@ -6,7 +6,7 @@ import {
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { AuthResponse } from '../appModels/auth-response.model';
 import { LoaderService } from './loader.service';
 import { jwtDecode } from 'jwt-decode';
@@ -23,6 +23,9 @@ export class AuthService {
   private tokenTimer: any;
   private userRole: string = '';
   private firstName: string = '';
+
+  private userRoleSubject = new BehaviorSubject<string>('');
+  userRole$ = this.userRoleSubject.asObservable();
 
   private baseUrl = environment.baseUrl;
 
@@ -72,6 +75,7 @@ export class AuthService {
     const token = localStorage.getItem('token');
     if (token) {
       const decodedToken: any = jwtDecode(token);
+      console.log('Decoded Token:', decodedToken);
       return decodedToken.user._id;
     }
     return null;
@@ -95,6 +99,8 @@ export class AuthService {
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
     this._cartService.clearCart();
+    this.userRole = ''; // Clear the userRole
+    this.userRoleSubject.next('');
     this.router.navigate(['/']);
   }
 
@@ -120,7 +126,9 @@ export class AuthService {
         this.firstName,
         userId
       );
+      this.userRoleSubject.next(this.userRole);
       this.showSuccess(res.message);
+      this.router.navigate([`/${this.userRole}-dashboard`]);
     }
   }
 
@@ -151,6 +159,7 @@ export class AuthService {
       this.isAuthenticated = true;
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusListener.next(true);
+      this.userRoleSubject.next(this.userRole);
     } else {
       this.router.navigate(['/signin']);
     }
@@ -184,6 +193,7 @@ export class AuthService {
     localStorage.removeItem('expiration');
     localStorage.removeItem('userRole');
     localStorage.removeItem('firstName');
+    localStorage.removeItem('userId');
   }
 
   // ----Fetch Authentication Data----

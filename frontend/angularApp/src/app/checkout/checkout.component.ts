@@ -7,8 +7,14 @@ import {
   NgForm,
   UntypedFormBuilder,
 } from '@angular/forms';
-import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
+import {
+  loadStripe,
+  Stripe,
+  StripeCardElement,
+  StripeElements,
+} from '@stripe/stripe-js';
 import { environment } from 'src/environments/environment';
+// import { OrderHistoryService } from '../appServices/order-history.service';
 
 @Component({
   selector: 'app-checkout',
@@ -17,26 +23,28 @@ import { environment } from 'src/environments/environment';
 })
 export class CheckoutComponent implements OnInit {
   stripe: Stripe | null = null;
+  elements!: StripeElements | null;
   card: StripeCardElement | null = null;
+  amount: number = 0;
+  userId: any = '';
+  name: string = '';
+  address: string = '';
+  deliveryAddress: string = '';
+  cartItems: any[] = [];
+  paymentStatus: string = '';
   selectedOption: string = 'Pay Now';
   onSelectPayNow: boolean = true;
   show: boolean = true;
-  name: string = '';
-  address: string = '';
-  amount: number = 0;
-  paymentStatus: string = '';
-  userId: any = '';
-
-  // checkoutForm!: FormGroup;
 
   constructor(
-    private fb: FormBuilder,
     private _checkoutService: CheckoutService,
     private router: Router
   ) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state) {
       this.amount = navigation.extras.state['subtotal'];
+      this.cartItems = navigation.extras.state['cartItems'] || [];
+      console.log('Initialized cartItems:', this.cartItems); // Debugging line
     }
   }
 
@@ -96,8 +104,44 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
-  checkout(form: NgForm) {
-    // event.preventDefault();
+  async checkout(form: NgForm) {
+    console.log('Checkout cartItems:', this.cartItems); // Debugging line
+
+    // Check the structure of cartItems
+    if (!Array.isArray(this.cartItems)) {
+      console.error('Cart items is not an array!');
+      return;
+    }
+
+    // Ensure each item has a valid productId and quantity
+    this.cartItems.forEach((item, index) => {
+      console.log(`Cart item ${index + 1}:`, item); // Debugging line
+      if (!item.product || !item.product._id) {
+        console.error(`Cart item ${index + 1} is missing productId!`);
+      } else {
+        item.productId = item.product._id; // Add this line to set productId
+      }
+      if (!item.quantity) {
+        console.error(`Cart item ${index + 1} is missing quantity!`);
+      }
+    });
+
+    this.cartItems.forEach((item) => {
+      console.log('Cart item:', item); // Detailed Debugging line
+      // console.log('Cart item productId:', item.productId); // Debugging line
+      console.log('Cart item productId:', item.product._id); // Debugging line
+      console.log('Cart item quantity:', item.quantity); // Debugging line
+    });
+
+    if (this.cartItems.length === 0) {
+      console.error('Cart is empty!');
+      return;
+    }
+
+    const delivery = {
+      address: this.address,
+      deliveryStatus: 'processing',
+    };
 
     if (this.onSelectPayNow) {
       this._checkoutService
@@ -105,10 +149,12 @@ export class CheckoutComponent implements OnInit {
           this.amount * 100,
           this.userId,
           this.name,
-          this.address
+          delivery,
+          this.cartItems
         )
         .subscribe(
           (response) => {
+            console.log('Check For CreatePaymentIntent CartItems:=>', response);
             const paymentIntentId = response.paymentIntentId;
 
             if (!this.stripe || !this.card || !paymentIntentId) {
@@ -150,9 +196,10 @@ export class CheckoutComponent implements OnInit {
                         .saveOrderDetails(
                           this.userId,
                           this.name,
-                          this.address,
                           this.amount,
-                          paymentIntentId
+                          paymentIntentId,
+                          this.cartItems,
+                          delivery
                         )
                         .subscribe(() => {
                           this.resetForm(form);
@@ -170,8 +217,16 @@ export class CheckoutComponent implements OnInit {
       console.log('Order Placed with Cash On Delivery!');
       this.paymentStatus = 'Order placed';
       this._checkoutService
-        .saveOrderDetails(this.userId, this.name, this.address, this.amount)
-        .subscribe(() => {
+        .saveOrderDetails(
+          this.userId,
+          this.name,
+          this.amount,
+          { id: 'COD', status: 'pending' },
+          this.cartItems,
+          delivery
+        )
+        .subscribe((res) => {
+          console.log('Order placed with COD:', res);
           this.resetForm(form);
         });
     }

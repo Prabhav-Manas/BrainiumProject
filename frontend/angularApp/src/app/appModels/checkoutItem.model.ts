@@ -1,6 +1,6 @@
 export interface CheckoutItem {
   productId: string;
-  productName: string;
+  productName: any;
   price: number;
   quantity: number;
 }

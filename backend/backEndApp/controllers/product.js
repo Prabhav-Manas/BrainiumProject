@@ -1,6 +1,7 @@
 const Product = require("../models/product");
 
 exports.addProduct = async (req, res) => {
+  // const sellerId = req.user._id;
   try {
     const {
       category,
@@ -12,36 +13,64 @@ exports.addProduct = async (req, res) => {
       discount,
     } = req.body;
 
-    const images = req.files.map((file) => file.filename);
+    console.log("Request body:", req.body); // Log req.body to check incoming data
+
+    // Validate and parse dates
+    const parsedStartDate = new Date(startDate);
+    const parsedCloseDate = new Date(closeDate);
+
+    if (isNaN(parsedStartDate.getTime()) || isNaN(parsedCloseDate.getTime())) {
+      console.error(
+        `Invalid Date - startDate: ${startDate}, closeDate: ${closeDate}`
+      );
+      return res.status(400).json({
+        message: "Invalid date format. Ensure dates are in ISO 8601 format.",
+        details: { startDate, closeDate },
+      });
+    }
+
+    // Validate and parse discount
+    const parsedDiscount = parseInt(discount, 10);
+    if (isNaN(parsedDiscount) || ![5, 10, 20].includes(parsedDiscount)) {
+      return res.status(400).json({
+        message: "Invalid discount value.",
+        details: { discount },
+      });
+    }
+
+    // const images = req.files ? req.files.map((file) => file.filename) : [];
 
     const newProduct = new Product({
       category,
+      seller: req.user._id,
       productName,
       description,
-      images,
+      // images,
       price,
       offer: {
-        startDate: new Date(startDate),
-        closeDate: new Date(closeDate),
+        startDate: parsedStartDate,
+        closeDate: parsedCloseDate,
       },
-      discount: parseInt(discount),
+      discount: parsedDiscount,
     });
+
+    console.log("New Product:=>", newProduct);
 
     await newProduct.save();
 
-    console.log("Uploaded files:", req.files);
+    // console.log("Uploaded files:", req.files);
 
     res.status(201).json({
       message: "Product added successfully",
       product: newProduct,
-      files: req.files,
+      // files: req.files,
     });
   } catch (error) {
-    if (error.message === "Invalid MIME Type") {
-      return res.status(400).json({
-        message: "Invalid MIME Type",
-      });
-    }
+    // if (error.message === "Invalid MIME Type") {
+    //   return res.status(400).json({
+    //     message: "Invalid MIME Type",
+    //   });
+    // }
     res.status(500).json({
       message: "Error adding product",
       error: error.message,
@@ -53,14 +82,13 @@ exports.getProducts = async (req, res) => {
   const pageSize = +req.query.pageSize; // Convert to number
   const currentPage = +req.query.page; // Convert to number
   const productQuery = Product.find();
-  let fetchedProducts;
 
   if (pageSize && currentPage) {
     productQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
   }
 
   try {
-    fetchedProducts = await productQuery;
+    const fetchedProducts = await productQuery;
     const count = await Product.countDocuments();
 
     res.status(200).json({
@@ -108,8 +136,10 @@ exports.updateProduct = async (req, res, next) => {
       productName: req.body.productName,
       description: req.body.description,
       price: req.body.price,
-      startDate: req.body.startDate,
-      closeDate: req.body.closeDate,
+      offer: {
+        startDate: new Date(req.body.startDate),
+        closeDate: new Date(req.body.closeDate),
+      },
       discount: req.body.discount,
     };
 

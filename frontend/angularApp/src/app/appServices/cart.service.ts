@@ -44,8 +44,13 @@ export class CartService {
   getAllCartItems() {
     return this.http.get<any>(`${this.baseUrl}/getCartItems`).pipe(
       tap((cartData: any) => {
+        const products = cartData.cartItems.map((item: any) => item.product);
+        this.cartSubject.next(products);
         this.cartItemCount.next(cartData.cartItems.length);
         this.cartUpdated.emit(this.cartItemCount.value);
+
+        // this.cartItemCount.next(cartData.cartItems.length);
+        // this.cartUpdated.emit(this.cartItemCount.value);
       })
     );
   }

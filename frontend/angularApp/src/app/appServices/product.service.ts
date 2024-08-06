@@ -16,21 +16,16 @@ export class ProductService {
     price: number,
     startDate: string,
     closeDate: string,
-    discount: number,
-    images: File[]
+    discount: number
   ) {
     const productData = new FormData();
     productData.append('category', category);
     productData.append('productName', productName);
     productData.append('description', description);
     productData.append('price', price.toString());
-    productData.append('startDate', startDate);
-    productData.append('closeDate', closeDate);
+    productData.append('startDate', new Date(startDate).toISOString()); // Ensure date is in ISO format
+    productData.append('closeDate', new Date(closeDate).toISOString());
     productData.append('discount', discount.toString());
-
-    for (let i = 0; i < images.length; i++) {
-      productData.append('images', images[i], images[i].name);
-    }
 
     return this.http.post(
       'http://localhost:8080/api/product/add-product',
