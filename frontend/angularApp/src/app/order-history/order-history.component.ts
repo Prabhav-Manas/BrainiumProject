@@ -25,19 +25,45 @@ export class OrderHistoryComponent implements OnInit {
     this.fetchOrderHistory();
   }
 
+  // fetchOrderHistory() {
+  //   this._checkoutService.getOrderHistory(this.userId).subscribe((res) => {
+  //     console.log(res.orders);
+  //     res.orders.forEach((order: any) => {
+  //       this.orders.push({
+  //         _id: order._id,
+  //         cartItems: order.cartItems,
+  //         delivery: order.delivery,
+  //         payment: order.payment,
+  //         orderDate: order.createdAt,
+  //       });
+  //     });
+  //     console.log(this.orders);
+  //   });
+  // }
+
   fetchOrderHistory() {
-    this._checkoutService.getOrderHistory(this.userId).subscribe((res) => {
-      console.log(res.orders);
-      res.orders.forEach((order: any) => {
-        this.orders.push({
+    if (this.userId) {
+      this._checkoutService.getOrderHistory(this.userId).subscribe((res) => {
+        console.log('Fetched Orders:', res.orders);
+        this.orders = res.orders.map((order: any) => ({
           _id: order._id,
-          cartItems: order.cartItems,
+          cartItems: order.cartItems.map((item: any) => ({
+            ...item,
+            productId: {
+              ...item.productId,
+              imagePath: this.getImageUrl(item.productId.imagePath),
+            },
+          })),
           delivery: order.delivery,
           payment: order.payment,
           orderDate: order.createdAt,
-        });
+        }));
+        console.log('Processed Orders:', this.orders);
       });
-      console.log(this.orders);
-    });
+    }
+  }
+
+  getImageUrl(filename: string): string {
+    return `http://localhost:8080/api/images/${filename}`;
   }
 }

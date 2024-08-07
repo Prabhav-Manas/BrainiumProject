@@ -17,6 +17,10 @@
   margin-right: 1rem;
 }
 
+.img {
+  height: 100px;
+}
+
 .order-details {
   flex: 1;
 }

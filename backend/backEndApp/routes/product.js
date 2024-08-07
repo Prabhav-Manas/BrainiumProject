@@ -4,24 +4,22 @@ const multer = require("multer");
 const authenticateUser = require("../middlewares/auth");
 const truncateDescription = require("../middlewares/truncateDescription");
 const ProductController = require("../controllers/product");
+const path = require("path");
 
 const MIME_TYPE_MAP = {
   "image/png": "png",
   "image/jpeg": "jpg",
   "image/jpg": "jpg",
-  // "image/gif": "gif",
-  // "image/svg+xml": "svg",
-  // "application/octet-stream": "jpg",
 };
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const isValid = MIME_TYPE_MAP[file.mimetype];
     let error = new Error("Invalid mime type");
-    if (!isValid) {
+    if (isValid) {
       error = null;
     }
-    cb(error, "backEndApp/images");
+    cb(error, path.join(__dirname, "..", "images")); // Ensure this is the correct path
   },
   filename: (req, file, cb) => {
     const name = file.originalname.toLowerCase().split(" ").join("-");
@@ -30,9 +28,11 @@ const storage = multer.diskStorage({
   },
 });
 
+const upload = multer({ storage: storage });
+
 router.post(
   "/add-product",
-  multer({ storage: storage }).single("images"),
+  upload.single("image"),
   authenticateUser,
   truncateDescription,
   ProductController.addProduct
@@ -54,6 +54,7 @@ router.get(
 
 router.put(
   "/:id",
+  upload.single("image"),
   authenticateUser,
   truncateDescription,
   ProductController.updateProduct

@@ -7,7 +7,7 @@ export interface Product {
   startDate: string | Date;
   closeDate: string | Date;
   discount: number;
-  images: string[];
+  imagePath: string;
   mainImage?: string | null;
   quantity?: number;
 }

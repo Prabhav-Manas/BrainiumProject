@@ -4,8 +4,12 @@
       <div class="card mb-3">
         <h2 class="card-header">{{ product.productName }}</h2>
         <div class="d-md-flex justify-content-around">
-          <div class="product-image" *ngIf="product.images.length > 0">
-            <img [src]="product.mainImage" alt="{{ product.productName }}" />
+          <div class="product-image" *ngIf="product.imagePath.length > 0">
+            <img
+              [src]="product.imagePath"
+              class="img"
+              alt="{{ product.productName }}"
+            />
           </div>
 
           <div class="card-body">
@@ -13,17 +17,31 @@
             <p class="card-text">{{ product.description }}</p>
             <p class="card-text"><strong>Price:</strong> {{ product.price }}</p>
             <div class="d-md-flex justify-content-around">
-              <a href="#" class="btn btn-primary">View Details</a>
-              <i
+              <button type="button" class="btn btn-info">View Details</button>
+              <!-- <i
                 class="fa fa-pencil-square-o edit"
                 aria-hidden="true"
                 (click)="onEditProduct(product)"
-              ></i>
-              <i
+              ></i> -->
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="onEditProduct(product)"
+              >
+                Edit
+              </button>
+              <!-- <i
                 class="fa fa-trash trash"
                 aria-hidden="true"
                 (click)="onDeleteProduct(product)"
-              ></i>
+              ></i> -->
+              <button
+                type="button"
+                class="btn btn-danger"
+                (click)="onDeleteProduct(product)"
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
@@ -41,74 +59,105 @@
 
 <!-- Update Form -->
 <!-- Add this below the product cards and paginator -->
-<div *ngIf="editingProduct">
-  <div class="col-md-6 m-auto shadow my-5 p-4">
-    <form [formGroup]="updateProductForm" (ngSubmit)="onUpdateProduct()">
-      <h1 class="text-success">Update Product</h1>
-      <div class="form-group">
-        <label for="category">Category</label>
-        <input id="category" formControlName="category" class="form-control" />
+<div *ngIf="editingProduct" class="modal" tabindex="-1" style="display: block">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Product</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="editingProduct = null; updateProductForm.reset()"
+        ></button>
       </div>
-      <div class="form-group">
-        <label for="productName">Product Name</label>
-        <input
-          id="productName"
-          formControlName="productName"
-          class="form-control"
-        />
+      <div class="modal-body">
+        <form [formGroup]="updateProductForm" (ngSubmit)="onUpdateProduct()">
+          <div class="form-group">
+            <label for="category">Category</label>
+            <input
+              id="category"
+              formControlName="category"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="productName">Product Name</label>
+            <input
+              id="productName"
+              formControlName="productName"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="form-control"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="price">Price</label>
+            <input
+              id="price"
+              type="number"
+              formControlName="price"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input
+              id="startDate"
+              type="date"
+              formControlName="startDate"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="closeDate">Close Date</label>
+            <input
+              id="closeDate"
+              type="date"
+              formControlName="closeDate"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="discount">Discount</label>
+            <input
+              id="discount"
+              type="number"
+              formControlName="discount"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="image">Product Image</label>
+            <input
+              id="image"
+              type="file"
+              (change)="onFileSelected($event)"
+              class="form-control"
+            />
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">
+              Update Product
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              (click)="editingProduct = null; updateProductForm.reset()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea
-          id="description"
-          formControlName="description"
-          class="form-control"
-        ></textarea>
-      </div>
-      <div class="form-group">
-        <label for="price">Price</label>
-        <input
-          id="price"
-          type="number"
-          formControlName="price"
-          class="form-control"
-        />
-      </div>
-      <div class="form-group">
-        <label for="startDate">Start Date</label>
-        <input
-          id="startDate"
-          type="date"
-          formControlName="startDate"
-          class="form-control"
-        />
-      </div>
-      <div class="form-group">
-        <label for="closeDate">Close Date</label>
-        <input
-          id="closeDate"
-          type="date"
-          formControlName="closeDate"
-          class="form-control"
-        />
-      </div>
-      <div class="form-group">
-        <label for="discount">Discount</label>
-        <input
-          id="discount"
-          type="number"
-          formControlName="discount"
-          class="form-control"
-        />
-      </div>
-      <button type="submit" class="btn btn-success">Update Product</button>
-      <button
-        type="button"
-        class="btn btn-secondary"
-        (click)="editingProduct = null; updateProductForm.reset()"
-      >
-        Cancel
-      </button>
-    </form>
+    </div>
   </div>
 </div>

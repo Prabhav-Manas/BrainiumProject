@@ -35,7 +35,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use("/images", express.static(path.join(__dirname, "images")));
 
 const mongoDBURL = process.env.MONGODB_URL;
 
@@ -48,25 +47,28 @@ mongoose
     console.error("Connection Failed!", error);
   });
 
-// ---For Image Upload---
-// app.use((err, req, res, next) => {
-//   if (err instanceof multer.MulterError) {
-//     console.log("Multer Error:", err.message);
-//     return res
-//       .status(400)
-//       .json({ message: "File upload error", error: err.message });
-//   } else if (err.message === "Invalid MIME Type") {
-//     console.log("Invalid MIME Type:", err.message);
-//     return res
-//       .status(400)
-//       .json({ message: "Invalid file type", error: err.message });
-//   } else {
-//     console.log("Internal Error:", err.message);
-//     return res
-//       .status(500)
-//       .json({ message: "Internal server error", error: err.message });
-//   }
-// });
+// ---Serve Static Files for Uploaded Images---
+app.use("/images", express.static(path.join("backEndApp/images")));
+
+// ---Error Handling Middleware for Image Upload---
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    console.log("Multer Error:", err.message);
+    return res
+      .status(400)
+      .json({ message: "File upload error", error: err.message });
+  } else if (err.message === "Invalid MIME Type") {
+    console.log("Invalid MIME Type:", err.message);
+    return res
+      .status(400)
+      .json({ message: "Invalid file type", error: err.message });
+  } else {
+    console.log("Internal Error:", err.message);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+});
 
 app.use("/api/user", sellerUserRoute);
 app.use("/api/product", productRoute);
@@ -95,19 +97,3 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
-
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     const isValid = MIME_TYPE_MAP[file.mimetype];
-//     let error = new Error("Invalid mime type");
-//     if (!isValid) {
-//       error = null;
-//     }
-//     cb(error, "backEndApp/images");
-//   },
-//   filename: (req, file, cb) => {
-//     const name = file.originalname.toLowerCase().split(" ").join("-");
-//     const ext = MIME_TYPE_MAP[file.mimetype];
-//     cb(null, name + "-" + Date.now() + "." + ext);
-//   },
-// });

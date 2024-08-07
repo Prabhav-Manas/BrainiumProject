@@ -41,7 +41,7 @@ export class ShoppingCartComponent implements OnInit {
   fetchAllCartItems() {
     this._cartService.getAllCartItems().subscribe(
       (cartData) => {
-        console.log('cartData', cartData.cartItems[0].quantity);
+        console.log('cartData', cartData);
         this.cartItems = cartData.cartItems;
         this.itemsInCart = this.cartItems.length > 0;
         // if (this.cartItems) {

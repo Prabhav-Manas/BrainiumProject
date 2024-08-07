@@ -20,6 +20,7 @@ export class ProductListComponent implements OnInit {
   productsPerPage = 2;
   currentPage = 1;
   editingProduct: Product | null = null;
+  selectedFile: File | null = null;
 
   constructor(
     private _productService: ProductService,
@@ -33,6 +34,7 @@ export class ProductListComponent implements OnInit {
       startDate: new FormControl('', [Validators.required]),
       closeDate: new FormControl('', [Validators.required]),
       discount: new FormControl('', [Validators.required]),
+      image: [''],
     });
   }
 
@@ -43,9 +45,10 @@ export class ProductListComponent implements OnInit {
   fetchProducts(postsPerPage: number, currentPage: number): void {
     this._productService.getProducts(postsPerPage, currentPage).subscribe(
       (data) => {
+        console.log('Product-List-Data:=>', data);
         this.products = data.products.map((product) => ({
           ...product,
-          mainImage: this.getImageUrl(product.images[0]), // Use the first image as mainImage
+          mainImage: this.getImageUrl(product.imagePath), // Use the first image as mainImage
         })) as Product[];
       },
       (error) => {
@@ -96,6 +99,13 @@ export class ProductListComponent implements OnInit {
       : '';
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+    }
+  }
+
   onUpdateProduct() {
     if (this.updateProductForm.invalid || !this.editingProduct) {
       return;
@@ -108,16 +118,19 @@ export class ProductListComponent implements OnInit {
 
     console.log('Updating product with ID:', updatedProduct._id); // Check the product ID before sending the request
 
-    this._productService.updateProduct(updatedProduct).subscribe(
-      () => {
-        this.fetchProducts(this.productsPerPage, this.currentPage);
-        this.editingProduct = null;
-        this.updateProductForm.reset();
-      },
-      (error) => {
-        console.log('Error updating product', error);
-      }
-    );
+    this._productService
+      .updateProduct(updatedProduct, this.selectedFile || undefined)
+      .subscribe(
+        () => {
+          this.fetchProducts(this.productsPerPage, this.currentPage);
+          this.editingProduct = null;
+          this.updateProductForm.reset();
+          this.selectedFile = null;
+        },
+        (error) => {
+          console.log('Error updating product', error);
+        }
+      );
   }
 
   onDeleteProduct(product: Product) {

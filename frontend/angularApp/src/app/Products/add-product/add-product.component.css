@@ -5,7 +5,7 @@ input[type="file"] {
   visibility: hidden;
 }
 .image-preview {
-  height: 5rem;
+  height: 3rem;
   margin: 1rem 0;
 }
 .image-preview img {

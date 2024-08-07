@@ -161,17 +161,12 @@ exports.getOrderHistory = async (req, res) => {
     const userId = req.params.userId;
     console.log("OrderHistory UserID:=>", userId);
 
-    // Validate userId
-    // if (!userId) {
-    //   return res.status(400).json({ message: "User ID is required" });
-    // }
-
     const query = userId ? { userId } : {};
 
     const orders = await Checkout.find({ userId })
       .populate({
         path: "cartItems.productId",
-        select: "productName price category image",
+        select: "productName price category imagePath",
         populate: {
           path: "category",
           select: "name",
@@ -235,7 +230,7 @@ exports.getSellerOrders = async (req, res) => {
               productDetails: {
                 productName: "$productDetails.productName",
                 price: "$productDetails.price",
-                image: "$productDetails.image",
+                imagePath: "$productDetails.imagePath",
               },
             },
           },

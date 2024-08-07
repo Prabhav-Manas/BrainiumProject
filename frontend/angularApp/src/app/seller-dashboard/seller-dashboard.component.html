@@ -21,10 +21,10 @@
             <div class="row g-0">
               <div class="col-md-4">
                 <img
-                  *ngIf="item.productDetails.image"
-                  [src]="item.productDetails.image"
+                  *ngIf="item.productDetails.imagePath"
+                  [src]="item.productDetails.imagePath"
                   alt="Product Image"
-                  class="img-fluid rounded-start"
+                  class="img-fluid rounded-start img"
                 />
               </div>
               <div class="col-md-8">

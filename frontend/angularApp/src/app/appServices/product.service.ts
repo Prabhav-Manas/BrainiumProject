@@ -16,7 +16,8 @@ export class ProductService {
     price: number,
     startDate: string,
     closeDate: string,
-    discount: number
+    discount: number,
+    image: File
   ) {
     const productData = new FormData();
     productData.append('category', category);
@@ -26,6 +27,7 @@ export class ProductService {
     productData.append('startDate', new Date(startDate).toISOString()); // Ensure date is in ISO format
     productData.append('closeDate', new Date(closeDate).toISOString());
     productData.append('discount', discount.toString());
+    productData.append('image', image);
 
     return this.http.post(
       'http://localhost:8080/api/product/add-product',
@@ -56,11 +58,24 @@ export class ProductService {
     return this.http.get(`http://localhost:8080/api/product/${productId}`);
   }
 
-  updateProduct(product: Product) {
+  updateProduct(product: Product, image?: File) {
     console.log('Update Product Service - Product ID:', product._id);
+    const formData = new FormData();
+    formData.append('_id', product._id);
+    formData.append('category', product.category);
+    formData.append('productName', product.productName);
+    formData.append('description', product.description);
+    formData.append('price', product.price.toString());
+    formData.append('startDate', product.startDate.toString());
+    formData.append('closeDate', product.closeDate.toString());
+    formData.append('discount', product.discount.toString());
+
+    if (image) {
+      formData.append('image', image);
+    }
     return this.http.put(
       `http://localhost:8080/api/product/${product._id}`,
-      product
+      formData
     );
   }
 

@@ -19,9 +19,9 @@
             <ng-container *ngFor="let order of orders">
               <ng-container *ngFor="let item of order.cartItems">
                 <tr>
-                  <td>
+                  <td *ngIf="item.productId?.imagePath">
                     <img
-                      [src]="item.productId.image"
+                      [src]="item.productId?.imagePath"
                       alt="{{ item.productId.productName }}"
                       style="width: 50px; height: 50px"
                     />

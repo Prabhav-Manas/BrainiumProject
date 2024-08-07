@@ -152,19 +152,13 @@
           >
             Pick Image
           </button>
-          <input
-            type="file"
-            name="images"
-            multiple
-            #filePicker
-            (change)="onImagesPicked($event)"
-          />
+          <input type="file" #filePicker (change)="onImagesPicked($event)" />
         </div>
         <div class="image-preview" *ngIf="imagePreviews.length > 0">
           <div class="row">
-            <div class="col-md-2" *ngFor="let preview of imagePreviews">
+            <div class="col-md-2">
               <div class="preview-item">
-                <img [src]="preview" alt="" class="img-fluid" />
+                <img [src]="imagePreviews" alt="" class="img-fluid" />
               </div>
             </div>
           </div>

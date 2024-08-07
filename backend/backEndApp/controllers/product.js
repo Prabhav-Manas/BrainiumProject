@@ -1,7 +1,6 @@
 const Product = require("../models/product");
 
 exports.addProduct = async (req, res) => {
-  // const sellerId = req.user._id;
   try {
     const {
       category,
@@ -20,9 +19,6 @@ exports.addProduct = async (req, res) => {
     const parsedCloseDate = new Date(closeDate);
 
     if (isNaN(parsedStartDate.getTime()) || isNaN(parsedCloseDate.getTime())) {
-      console.error(
-        `Invalid Date - startDate: ${startDate}, closeDate: ${closeDate}`
-      );
       return res.status(400).json({
         message: "Invalid date format. Ensure dates are in ISO 8601 format.",
         details: { startDate, closeDate },
@@ -38,14 +34,23 @@ exports.addProduct = async (req, res) => {
       });
     }
 
-    // const images = req.files ? req.files.map((file) => file.filename) : [];
+    // Ensure an image was uploaded
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Image is required",
+      });
+    }
+
+    // Construct the image path
+    // const imageUrl = req.file.path;
+    const url = req.protocol + "://" + req.get("host");
 
     const newProduct = new Product({
       category,
       seller: req.user._id,
       productName,
       description,
-      // images,
+      imagePath: url + "/images/" + req.file.filename,
       price,
       offer: {
         startDate: parsedStartDate,
@@ -58,19 +63,11 @@ exports.addProduct = async (req, res) => {
 
     await newProduct.save();
 
-    // console.log("Uploaded files:", req.files);
-
     res.status(201).json({
       message: "Product added successfully",
       product: newProduct,
-      // files: req.files,
     });
   } catch (error) {
-    // if (error.message === "Invalid MIME Type") {
-    //   return res.status(400).json({
-    //     message: "Invalid MIME Type",
-    //   });
-    // }
     res.status(500).json({
       message: "Error adding product",
       error: error.message,
@@ -143,10 +140,37 @@ exports.updateProduct = async (req, res, next) => {
       discount: req.body.discount,
     };
 
+    // Handle image update if a new image is uploaded
+    if (req.file) {
+      const url = req.protocol + "://" + req.get("host");
+      updatedProduct.imagePath = url + "/images/" + req.file.filename;
+    }
+
+    // Validate and parse dates
+    const parsedStartDate = new Date(req.body.startDate);
+    const parsedCloseDate = new Date(req.body.closeDate);
+    if (isNaN(parsedStartDate.getTime()) || isNaN(parsedCloseDate.getTime())) {
+      return res.status(400).json({
+        message: "Invalid date format. Ensure dates are in ISO 8601 format.",
+        details: {
+          startDate: req.body.startDate,
+          closeDate: req.body.closeDate,
+        },
+      });
+    }
+
+    // Validate and parse discount
+    const parsedDiscount = parseInt(req.body.discount, 10);
+    if (isNaN(parsedDiscount) || ![5, 10, 20].includes(parsedDiscount)) {
+      return res.status(400).json({
+        message: "Invalid discount value.",
+        details: { discount: req.body.discount },
+      });
+    }
+
     console.log("Updated product data:", updatedProduct);
 
     const product = await Product.findByIdAndUpdate(
-      // { _id: productId },
       productId,
       { $set: updatedProduct },
       { new: true } // This returns the updated document
