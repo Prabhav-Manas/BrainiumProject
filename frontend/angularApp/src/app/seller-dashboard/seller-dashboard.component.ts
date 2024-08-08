@@ -12,13 +12,9 @@ export class SellerDashboardComponent implements OnInit {
   userId: string = 'userId';
   sellerId: any = '';
 
-  constructor(
-    private _checkoutService: CheckoutService,
-    private _authService: AuthService
-  ) {}
+  constructor(private _checkoutService: CheckoutService) {}
 
   ngOnInit(): void {
-    // this.userId = '66815fbc9c3f8b13871b6fe3';
     this.sellerId = localStorage.getItem('userId');
     console.log(this.sellerId);
     this.fetchOrders();

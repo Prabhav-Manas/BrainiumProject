@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree> {
     const isAuth = this._authService.getIsAuth();
     if (!isAuth) {
-      return this.router.createUrlTree(['/signin']);
+      return this.router.createUrlTree(['/auth/signin']);
     }
 
     const userRole = this._authService.getUserRole();
@@ -37,7 +37,6 @@ export class AuthGuard implements CanActivate {
       }
       return false;
     }
-
     return isAuth;
   }
 }

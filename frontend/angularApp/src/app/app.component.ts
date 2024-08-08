@@ -14,17 +14,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private _authService: AuthService,
-    private _cartService: CartService,
-    private router: Router
-  ) {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        if (!this._authService.getIsAuth()) {
-          this.router.navigate(['/signin']);
-        }
-      }
-    });
-  }
+    private _cartService: CartService
+  ) {}
 
   ngOnInit(): void {
     this._authService.autoAuthData();

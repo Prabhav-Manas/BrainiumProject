@@ -11,6 +11,7 @@
               id="dropdown"
               formControlName="userType"
               class="floatDropDown floatDropDown"
+              autocomplete="off"
             >
               <option
                 *ngFor="let option of dropdownOptions"
@@ -29,6 +30,7 @@
             class="form-control relative"
             id="email"
             formControlName="email"
+            autocomplete="email"
             [ngClass]="{'is-invalid':logInForm.controls?.['email']?.invalid && logInForm.controls?.['email']?.touched}"
             (keydown)="Space($event)"
           />
@@ -47,6 +49,7 @@
             class="form-control relative"
             id="password"
             formControlName="password"
+            autocomplete="current-password"
             [ngClass]="{'is-invalid': logInForm.controls?.['password']?.invalid && logInForm.controls?.['password']?.touched}"
             (keydown)="Space($event)"
           />
@@ -64,16 +67,12 @@
         </div>
         <div class="d-md-flex justify-content-between">
           <div class="">
-            <!-- <p class="textColor alreadyAcc"> -->
-            <a routerLink="/signup" class="textColor alreadyAcc"
+            <a routerLink="/auth/signup" class="textColor alreadyAcc"
               >Don't have account? Sign up</a
             ><br />
-            <!-- </p> -->
-            <!-- <p> -->
             <a routerLink="/forgotPassword" class="textColor forgotPass"
               >Forgot Password</a
             >
-            <!-- </p> -->
           </div>
           <button type="submit" class="btn btnSubmit" (click)="onSubmit()">
             Submit

@@ -160,8 +160,6 @@ export class AuthService {
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusListener.next(true);
       this.userRoleSubject.next(this.userRole);
-    } else {
-      this.router.navigate(['/signin']);
     }
   }
 

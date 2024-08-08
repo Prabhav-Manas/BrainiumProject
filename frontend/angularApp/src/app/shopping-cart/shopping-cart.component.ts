@@ -44,11 +44,6 @@ export class ShoppingCartComponent implements OnInit {
         console.log('cartData', cartData);
         this.cartItems = cartData.cartItems;
         this.itemsInCart = this.cartItems.length > 0;
-        // if (this.cartItems) {
-        //   this.itemsInCart = true;
-        // } else {
-        //   this.itemsInCart = false;
-        // }
       },
       (error) => {
         console.log('Error Fetching Cart Items:=>', error);

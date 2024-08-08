@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SigninComponent } from './authentication/signin/signin.component';
-import { SignupComponent } from './authentication/signup/signup.component';
 import { AuthGuard } from './authentication/auth.guard';
 import { LogInGuard } from './authentication/logIn.guard';
 import { VerifyUserComponent } from './verify-user/verify-user.component';
@@ -19,9 +17,12 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { OrderHistoryComponent } from './order-history/order-history.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'signin', pathMatch: 'full' },
-  { path: 'signin', component: SigninComponent, canActivate: [LogInGuard] },
-  { path: 'signup', component: SignupComponent, canActivate: [LogInGuard] },
+  { path: '', redirectTo: 'auth/signin', pathMatch: 'full' },
+  {
+    path: 'auth',
+    loadChildren: () =>
+      import('./authentication/auth.module').then((m) => m.AuthModule),
+  },
   {
     path: 'forgotPassword',
     component: ForgotPasswordComponent,

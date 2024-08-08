@@ -25,7 +25,7 @@ export class VerifyUserComponent implements OnInit {
       .subscribe(
         (res) => {
           alert('Email successfully verified');
-          this.router.navigate(['/signin']); // Navigate to logIn page after successful verification
+          this.router.navigate(['/auth/signin']); // Navigate to logIn page after successful verification
         },
         (error) => {
           alert('Error verifying email');

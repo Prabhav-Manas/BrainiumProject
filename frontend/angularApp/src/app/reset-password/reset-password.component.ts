@@ -32,7 +32,6 @@ export class ResetPasswordComponent implements OnInit {
       newPassword: new FormControl('', [Validators.required]),
       confirmNewPassword: new FormControl('', [Validators.required]),
     });
-    // this.token = this.route.snapshot.paramMap.get('token') || '';
   }
 
   ngOnInit(): void {
