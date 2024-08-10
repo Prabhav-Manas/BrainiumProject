@@ -163,7 +163,8 @@ exports.getOrderHistory = async (req, res) => {
 
     const query = userId ? { userId } : {};
 
-    const orders = await Checkout.find({ userId })
+    const orders = await Checkout.find(query)
+      .sort({ createdAt: -1 }) // Sort orders by createdAt in descending order
       .populate({
         path: "cartItems.productId",
         select: "productName price category imagePath",

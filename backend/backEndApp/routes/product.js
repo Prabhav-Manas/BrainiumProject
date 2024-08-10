@@ -5,6 +5,14 @@ const authenticateUser = require("../middlewares/auth");
 const truncateDescription = require("../middlewares/truncateDescription");
 const ProductController = require("../controllers/product");
 const path = require("path");
+const { validate } = require("express-validation");
+const {
+  addProductValidation,
+  updateProductValidation,
+  // getProductValidation,
+  // getSingleProductValidation,
+  // deleteProductValidation,
+} = require("../middlewares/validators/product-validator");
 
 const MIME_TYPE_MAP = {
   "image/png": "png",
@@ -34,6 +42,7 @@ router.post(
   "/add-product",
   upload.single("image"),
   authenticateUser,
+  validate(addProductValidation, {}, {}),
   truncateDescription,
   ProductController.addProduct
 );
@@ -41,6 +50,7 @@ router.post(
 router.get(
   "/all-products",
   authenticateUser,
+  // validate(getProductValidation, {}, {}),
   truncateDescription,
   ProductController.getProducts
 );
@@ -48,6 +58,7 @@ router.get(
 router.get(
   "/:id",
   authenticateUser,
+  // validate(getSingleProductValidation, {}, {}),
   truncateDescription,
   ProductController.getSingleProduct
 );
@@ -56,10 +67,16 @@ router.put(
   "/:id",
   upload.single("image"),
   authenticateUser,
+  // validate(updateProductValidation, {}, {}),
   truncateDescription,
   ProductController.updateProduct
 );
 
-router.delete("/:id", authenticateUser, ProductController.deleteProduct);
+router.delete(
+  "/:id",
+  authenticateUser,
+  // validate(deleteProductValidation, {}, {}),
+  ProductController.deleteProduct
+);
 
 module.exports = router;

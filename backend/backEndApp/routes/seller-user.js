@@ -6,7 +6,7 @@ const {
   logInValidation,
   forgotPasswordValidation,
   resetPasswordValidation,
-} = require("../middlewares/validators");
+} = require("../middlewares/validators/seller-user-validator");
 const { validate } = require("express-validation");
 
 // ---SignUp API---

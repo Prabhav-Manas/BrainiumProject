@@ -15,14 +15,14 @@ const sellerUserSchema = new mongoose.Schema({
   },
   businessName: {
     type: String,
-    required: function () {
+    required: () => {
       return this.userType === "seller";
     },
     trim: true,
   },
   gstNumber: {
     type: String,
-    required: function () {
+    required: () => {
       return this.userType === "seller";
     },
     trim: true,
