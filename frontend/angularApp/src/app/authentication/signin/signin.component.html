@@ -36,7 +36,7 @@
           />
           <small
             *ngIf="logInForm.controls?.['email']?.errors?.['required']"
-            class="invalid-feedback text-danger"
+            class="invalid-feedback text-danger absolute"
           >
             Email is required.
           </small>
@@ -53,6 +53,12 @@
             [ngClass]="{'is-invalid': logInForm.controls?.['password']?.invalid && logInForm.controls?.['password']?.touched}"
             (keydown)="Space($event)"
           />
+          <small
+            *ngIf="logInForm.controls?.['password']?.errors?.['required']"
+            class="invalid-feedback text-danger absolute"
+          >
+            Password is required.
+          </small>
           <span class="eye">
             <i
               class="fa fa-{{

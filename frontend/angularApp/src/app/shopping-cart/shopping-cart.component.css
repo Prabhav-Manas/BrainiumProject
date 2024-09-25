@@ -1,6 +1,11 @@
 .bgCartSubTotalColor {
-  background-color: #9f70fd;
+  background-color: #697565;
   height: 90vh;
+  position: absolute;
+  right: 0;
+}
+.cart-details {
+  position: relative;
 }
 .couponInput {
   float: right;
@@ -49,4 +54,10 @@ input[type="number"] {
   text-align: center;
   border: 1px solid #ddd;
   margin: 0 5px;
+}
+
+@media (max-width: 768px) {
+  .bgCartSubTotalColor {
+    position: initial;
+  }
 }

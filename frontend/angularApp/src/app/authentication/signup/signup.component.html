@@ -39,7 +39,7 @@
               />
               <small
                 *ngIf="regForm.controls?.['firstName']?.errors?.['required']"
-                class="invalid-feedback text-danger"
+                class="invalid-feedback text-danger absolute"
               >
                 First Name is required.
               </small>
@@ -60,7 +60,7 @@
               />
               <small
                 *ngIf="regForm.controls?.['lastName']?.errors?.['required']"
-                class="invalid-feedback text-danger"
+                class="invalid-feedback text-danger absolute"
               >
                 Last Name is required.
               </small>
@@ -81,7 +81,7 @@
           />
           <small
             *ngIf="regForm.controls?.['email']?.errors?.['required']"
-            class="invalid-feedback text-danger"
+            class="invalid-feedback text-danger absolute"
           >
             Email is required.
           </small>
@@ -111,7 +111,7 @@
           </span>
           <small
             *ngIf="regForm.controls?.['password']?.errors?.['required']"
-            class="invalid-feedback text-danger"
+            class="invalid-feedback text-danger absolute"
           >
             Password is required.
           </small>
@@ -136,7 +136,7 @@
           </mat-form-field>
           <small
             *ngIf="regForm.controls?.['phone']?.errors?.['required']"
-            class="invalid-feedback text-danger"
+            class="invalid-feedback text-danger absolute"
           >
             Phone Number is required.
           </small>
@@ -158,7 +158,7 @@
             />
             <small
               *ngIf="regForm.controls?.['businessName']?.errors?.['required']"
-              class="invalid-feedback text-danger"
+              class="invalid-feedback text-danger absolute"
             >
               Business Name is required.
             </small>
@@ -179,7 +179,7 @@
             />
             <small
               *ngIf="regForm.controls?.['gstNumber']?.errors?.['required']"
-              class="invalid-feedback text-danger"
+              class="invalid-feedback text-danger absolute"
             >
               GST Number is required.
             </small>

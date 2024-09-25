@@ -1,13 +1,13 @@
 /* SideBar */
 .sidenav {
-  background: #641001;
-  transition: all 0.5s ease;
+  background-color: #181c14;
+  transition: all 0.5s ease-in-out;
   position: fixed;
   z-index: 1;
   top: 0;
   width: 16.5625rem;
   height: 100vh;
-  box-shadow: 0.063rem 0 1.25rem 0 #8690a3;
+  /* box-shadow: 0.063rem 0 1.25rem 0 #8690a3; */
 }
 .sidenav.collapsed {
   width: 80px;
@@ -95,7 +95,7 @@ li {
 
 /* Top-navbar */
 .bgUserColor {
-  background-color: #7f27ff;
+  background-color: #181c14;
 }
 .floatItem {
   float: right;

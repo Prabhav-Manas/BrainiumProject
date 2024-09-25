@@ -5,6 +5,7 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Product } from 'src/app/appModels/product-data.model';
 import { ProductService } from 'src/app/appServices/product.service';
 
@@ -24,7 +25,8 @@ export class ProductListComponent implements OnInit {
 
   constructor(
     private _productService: ProductService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.updateProductForm = this.fb.group({
       category: new FormControl('', [Validators.required]),

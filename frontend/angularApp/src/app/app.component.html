@@ -1,12 +1,50 @@
-<app-loader></app-loader>
+<!-- <app-loader></app-loader>
 
-<app-header></app-header>
+<app-header (sidebarToggle)="onSidebarToggle($event)"></app-header>
 <div class="container-fluid">
   <div class="row">
     <div [ngClass]="{ 'mt-5': userType === 'user' }">
       <router-outlet class="mt-5"></router-outlet>
+
+      <app-seller-dashboard
+        *ngIf="isSeller"
+        [isSidebarExpanded]="isSidebarExpanded"
+      >
+      </app-seller-dashboard>
     </div>
 
     <app-footer *ngIf="userType === 'user'"></app-footer>
+  </div>
+</div> -->
+
+<app-loader></app-loader>
+
+<app-header (sidebarToggle)="onSidebarToggle($event)"></app-header>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar for Seller -->
+    <div
+      *ngIf="isSeller"
+      [ngClass]="{ 'col-2': isSidebarExpanded, 'col-1': !isSidebarExpanded }"
+    >
+      <!-- <app-seller-dashboard -->
+      <!-- [isSidebarExpanded]="isSidebarExpanded" -->
+      <!-- ></app-seller-dashboard> -->
+    </div>
+
+    <!-- Main Content Area -->
+    <div
+      [ngClass]="{
+        'col-10': isSeller && isSidebarExpanded,
+        'col-11': isSeller && !isSidebarExpanded,
+        'col-12': !isSeller,
+        'mt-5': userType === 'user'
+      }"
+    >
+      <router-outlet></router-outlet>
+      <!-- Footer only for user -->
+      <app-footer *ngIf="userType === 'user'"></app-footer>
+    </div>
   </div>
 </div>

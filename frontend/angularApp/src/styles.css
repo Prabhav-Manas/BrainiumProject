@@ -1,14 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-/* 8D7B68
-A4907C
-C8B6A6
-F1DEC9 */
-
-/* styles.css or styles.scss */
-
-/* styles.css or styles.scss */
-
-/* styles.css or styles.scss */
 
 .custom-toast-success {
   background-color: green !important;
@@ -73,4 +63,10 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #ecdfcc;
 }
+
+/* #181C14
+#3C3D37
+#697565
+#ECDFCC */

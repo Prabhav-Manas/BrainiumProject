@@ -6,9 +6,11 @@
 }
 .floatDropDown {
   float: right;
+  background-color: #3c3d37;
+  color: #ecdfcc;
 }
 .bgFormColor {
-  background-image: linear-gradient(to right, #d2b4ff, #ddd3f1);
+  background-color: #3c3d37;
 }
 input {
   border: none;
@@ -24,16 +26,20 @@ input:focus {
   right: 38%;
 }
 .textColor {
-  color: #000;
+  color: #ecdfcc;
 }
 .alreadyAcc {
   cursor: pointer;
   text-decoration: none;
 }
+.mat-mdc-form-field-subscript-wrapper,
+.mat-mdc-form-field-bottom-align {
+  color: #ecdfcc !important;
+}
 .btnSubmit {
   border: none;
-  background-color: #b787ff;
-  color: #fff;
+  background-color: #ecdfcc;
+  color: #3c3d37;
   border-radius: 0;
 }
 /* .country-selector {

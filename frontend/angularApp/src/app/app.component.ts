@@ -12,6 +12,8 @@ export class AppComponent implements OnInit {
   userType: any = '';
   isSeller: boolean = false;
 
+  isSidebarExpanded: boolean = false; // Track the sidebar state
+
   constructor(
     private _authService: AuthService,
     private _cartService: CartService
@@ -29,5 +31,9 @@ export class AppComponent implements OnInit {
       this.isSeller = this.userType === 'seller';
       console.log('UserType:=>', this.userType);
     });
+  }
+
+  onSidebarToggle(expanded: boolean) {
+    this.isSidebarExpanded = expanded; // Update the sidebar state
   }
 }

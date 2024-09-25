@@ -23,6 +23,8 @@ import { FooterModule } from './footer/footer.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { PageNotFoundModule } from './page-not-found/page-not-found.module';
 
+import { MatPaginatorModule } from '@angular/material/paginator';
+
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './authentication/auth-interceptor';
 
@@ -58,6 +60,7 @@ import { AuthInterceptor } from './authentication/auth-interceptor';
     NgxStripeModule.forRoot(
       '{{pk_test_51PacOZ2KZ7ovD5V6PkZZKPjfTarqVidUtBCEgZcIEqOZKFqeMwP2EvuWmnj2vnRXMk0Aj1KSxdGqbaN7GY7D3dPG00FzHGAJvp}}'
     ),
+    MatPaginatorModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

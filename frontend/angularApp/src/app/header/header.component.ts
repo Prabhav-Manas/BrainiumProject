@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/appServices/auth.service';
 import { navBarData } from './nav-data';
@@ -22,6 +28,9 @@ export class HeaderComponent implements OnInit {
   firstName: string = '';
 
   cartItemCount: number = 0;
+
+  @Output() sidebarToggle = new EventEmitter<boolean>();
+  isSidebarExpanded = false;
 
   constructor(
     private _authService: AuthService,
@@ -73,11 +82,18 @@ export class HeaderComponent implements OnInit {
 
   toggleCollapse() {
     this.isCollapsed = !this.isCollapsed;
+    this.isSidebarExpanded = !this.isCollapsed;
+    this.sidebarToggle.emit(this.isSidebarExpanded); // Emit the event to parent component
   }
 
   closeSideNav() {
     this.collapsed = false;
   }
+
+  // toggleSidebar() {
+  //   this.isSidebarExpanded = !this.isSidebarExpanded;
+  //   this.sidebarToggle.emit(this.isSidebarExpanded); // Emit the current state
+  // }
 
   closeSideNavOnMenuClick() {
     const offcanvasElement = document.getElementById('offcanvasTop');

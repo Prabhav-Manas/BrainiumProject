@@ -1,5 +1,12 @@
 <div class="container">
-  <div class="row">
+  <mat-paginator
+    [length]="totalProducts"
+    [pageSize]="productsPerPage"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    (page)="onPageChanged($event)"
+  >
+  </mat-paginator>
+  <div class="row mt-3">
     <div class="col-md-6" *ngFor="let product of products">
       <div class="card mb-3">
         <h2 class="card-header">{{ product.productName }}</h2>
@@ -17,7 +24,13 @@
             <p class="card-text">{{ product.description }}</p>
             <p class="card-text"><strong>Price:</strong> {{ product.price }}</p>
             <div class="d-md-flex justify-content-around">
-              <button type="button" class="btn btn-info">View Details</button>
+              <!-- <button
+                type="button"
+                class="btn btn-info"
+                [routerLink]="['/product-details', product._id]"
+              >
+                View Details
+              </button> -->
               <!-- <i
                 class="fa fa-pencil-square-o edit"
                 aria-hidden="true"
@@ -48,14 +61,15 @@
       </div>
     </div>
   </div>
+  <mat-paginator
+    [length]="totalProducts"
+    [pageSize]="productsPerPage"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    (page)="onPageChanged($event)"
+    aria-label="Select page"
+  >
+  </mat-paginator>
 </div>
-<mat-paginator
-  [length]="totalProducts"
-  [pageSize]="productsPerPage"
-  [pageSizeOptions]="[5, 10, 25, 100]"
-  (page)="onPageChanged($event)"
->
-</mat-paginator>
 
 <!-- Update Form -->
 <!-- Add this below the product cards and paginator -->

@@ -7,6 +7,17 @@
 .logoutButton {
   right: 5px;
 }
+.card {
+  transition: transform 0.9s ease, box-shadow 0.5s ease; /* Smooth transition */
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Move the card slightly upward */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Add shadow */
+}
+.card-body {
+  background-color: #e9e8e7;
+}
 .card,
 button {
   border-radius: 0;
